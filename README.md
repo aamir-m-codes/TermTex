@@ -1,0 +1,1 @@
+# Special Terminal Text Editor
