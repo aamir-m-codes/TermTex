@@ -5,14 +5,17 @@
 #include <ctype.h>
 #include <errno.h>
 
+/*** Data Section ***/
 struct termios original_attr;
 
+/*** Error Handling Section ***/
 void die(const char *err_msg)
 {
   perror(err_msg);
   exit(1);
 }
 
+/*** Terminal Section ***/
 void disableRawMode()
 {
   if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &original_attr) == -1)
@@ -37,6 +40,7 @@ void enableRawMode()
     die("Error in tcsetattr");
 }
 
+/*** init ***/
 int main()
 {
   enableRawMode();
