@@ -6,6 +6,12 @@
 
 struct termios original_attr;
 
+void die(const char *err_msg)
+{
+  perror(err_msg);
+  exit(1);
+}
+
 void disableRawMode()
 {
   tcsetattr(STDIN_FILENO, TCSAFLUSH, &original_attr);
