@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <errno.h>
+#include <sys/ioctl.h>
 
 #define CTRL_KEY(key) ((key) & 0x1F)
 
@@ -17,10 +18,13 @@ void clearScreen();
 void repositionCursor();
 void refreshEditorScreen();
 void drawEditorRows();
+int getWindowSize(int *rows, int *cols);
 
 /*** Data Section ***/
 struct editorConfig
 {
+  int screenRows;
+  int screenCols;
   struct termios original_term_attr;
 };
 
@@ -72,6 +76,21 @@ char editorReadKey()
   return c;
 }
 
+int getWindowSize(int *rows, int *cols)
+{
+  struct winsize wsz;
+  if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &wsz) == -1 || wsz.ws_col == 0)
+  {
+    return -1;
+  }
+  else
+  {
+    *cols = wsz.ws_col;
+    *rows = wsz.ws_row;
+    return 0;
+  }
+}
+
 /*** Input section ***/
 void editorProcessKeyPress()
 {
@@ -114,9 +133,16 @@ void drawEditorRows()
 }
 
 /*** init ***/
+void initEditor()
+{
+  if (getWindowSize(&E_Config.screenRows, &E_Config.screenCols) == -1)
+    die("Error in window size");
+}
+
 int main()
 {
   enableRawMode();
+  initEditor();
   while (1)
   {
     refreshEditorScreen();
