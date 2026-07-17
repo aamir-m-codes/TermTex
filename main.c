@@ -69,6 +69,7 @@ void editorProcessKeyPress()
 /*** Output Section ***/
 void refreshEditorScreen()
 {
+  write(STDOUT_FILENO, "\x1b[2J", 4);
 }
 
 /*** init ***/
