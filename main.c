@@ -128,7 +128,9 @@ void drawEditorRows()
 {
   for (int i = 0; i < E_Config.screenRows; i++)
   {
-    write(STDOUT_FILENO, "~\r\n", 3);
+    write(STDOUT_FILENO, "~", 1);
+    if (i < E_Config.screenRows - 1)
+      write(STDOUT_FILENO, "\r\n", 2);
   }
 }
 
