@@ -16,6 +16,7 @@ void editorProcessKeyPress();
 void clearScreen();
 void repositionCursor();
 void refreshEditorScreen();
+void drawEditorRows();
 
 /*** Data Section ***/
 struct termios original_attr;
@@ -95,6 +96,16 @@ void refreshEditorScreen()
 {
   clearScreen();
   repositionCursor();
+  drawEditorRows();
+  repositionCursor();
+}
+
+void drawEditorRows()
+{
+  for (int i = 0; i < 20; i++)
+  {
+    write(STDOUT_FILENO, "~\r\n", 3);
+  }
 }
 
 /*** init ***/
