@@ -66,12 +66,18 @@ void editorProcessKeyPress()
   }
 }
 
+/*** Output Section ***/
+void refreshEditorScreen()
+{
+}
+
 /*** init ***/
 int main()
 {
   enableRawMode();
   while (1)
   {
+    refreshEditorScreen();
     editorProcessKeyPress();
   }
   return 0;
