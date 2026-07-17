@@ -19,7 +19,12 @@ void refreshEditorScreen();
 void drawEditorRows();
 
 /*** Data Section ***/
-struct termios original_attr;
+struct editorConfig
+{
+  struct termios original_term_attr;
+};
+
+struct editorConfig E_Config;
 
 /*** Error Handling Section ***/
 void die(const char *err_msg)
@@ -33,17 +38,17 @@ void die(const char *err_msg)
 /*** Terminal Section ***/
 void disableRawMode()
 {
-  if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &original_attr) == -1)
+  if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &E_Config.original_term_attr) == -1)
     die("Error in tcsetattr");
 }
 
 void enableRawMode()
 {
-  if (tcgetattr(STDIN_FILENO, &original_attr) == -1)
+  if (tcgetattr(STDIN_FILENO, &E_Config.original_term_attr) == -1)
     die("Error in tcgetattr");
   atexit(disableRawMode);
 
-  struct termios raw = original_attr;
+  struct termios raw = E_Config.original_term_attr;
   tcgetattr(STDIN_FILENO, &raw);
   raw.c_iflag &= ~(IXON | ICRNL);
   raw.c_oflag &= ~(OPOST);
