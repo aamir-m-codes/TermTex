@@ -7,6 +7,16 @@
 
 #define CTRL_KEY(key) ((key) & 0x1F)
 
+/*** Functions Prototype ***/
+void die(const char *err_msg);
+void disableRawMode();
+void enableRawMode();
+char editorReadKey();
+void editorProcessKeyPress();
+void clearScreen();
+void repositionCursor();
+void refreshEditorScreen();
+
 /*** Data Section ***/
 struct termios original_attr;
 
