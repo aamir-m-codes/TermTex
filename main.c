@@ -126,7 +126,7 @@ void refreshEditorScreen()
 
 void drawEditorRows()
 {
-  for (int i = 0; i < 20; i++)
+  for (int i = 0; i < E_Config.screenRows; i++)
   {
     write(STDOUT_FILENO, "~\r\n", 3);
   }
