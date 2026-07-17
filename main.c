@@ -5,6 +5,8 @@
 #include <ctype.h>
 #include <errno.h>
 
+#define CTRL_KEY(key) ((key) & 0x1F)
+
 /*** Data Section ***/
 struct termios original_attr;
 
