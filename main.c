@@ -13,8 +13,8 @@ struct termios original_attr;
 /*** Error Handling Section ***/
 void die(const char *err_msg)
 {
-  write(STDOUT_FILENO, "\x1b[2J", 4);
-  write(STDOUT_FILENO, "\x1b[H", 3);
+  clearScreen();
+  repositionCursor();
   perror(err_msg);
   exit(1);
 }
@@ -63,18 +63,28 @@ void editorProcessKeyPress()
   switch (c)
   {
   case CTRL_KEY('q'):
-    write(STDOUT_FILENO, "\x1b[2J", 4);
-    write(STDOUT_FILENO, "\x1b[H", 3);
+    clearScreen();
+    repositionCursor();
     exit(0);
     break;
   }
 }
 
 /*** Output Section ***/
-void refreshEditorScreen()
+void clearScreen()
 {
   write(STDOUT_FILENO, "\x1b[2J", 4);
+}
+
+void repositionCursor()
+{
   write(STDOUT_FILENO, "\x1b[H", 3);
+}
+
+void refreshEditorScreen()
+{
+  clearScreen();
+  repositionCursor();
 }
 
 /*** init ***/
