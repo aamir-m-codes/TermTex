@@ -191,7 +191,6 @@ void repositionCursor(struct buffer *ab)
 void refreshEditorScreen()
 {
   struct buffer ab = BUFFER_INIT;
-  clearScreen(&ab);
   repositionCursor(&ab);
   drawEditorRows(&ab);
   repositionCursor(&ab);
@@ -205,6 +204,7 @@ void drawEditorRows(struct buffer *ab)
   for (int i = 0; i < E_Config.screenRows; i++)
   {
     bufferAppend(ab, "~", 1);
+    bufferAppend(ab, "\x1b[K", 3);
     if (i < E_Config.screenRows - 1)
       bufferAppend(ab, "\r\n", 2);
   }
