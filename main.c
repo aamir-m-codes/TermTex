@@ -9,6 +9,10 @@
 
 #define CTRL_KEY(key) ((key) & 0x1F)
 
+/*** Types declaration ***/
+struct editorConfig;
+struct buffer;
+
 /*** Functions Prototype ***/
 void die(const char *err_msg);
 void disableRawMode();
