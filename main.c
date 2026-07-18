@@ -209,6 +209,9 @@ void drawEditorRows(struct buffer *ab)
     {
       char welcome[64];
       int welcomeLen = snprintf(welcome, sizeof(welcome), "Welcome to TermTex Editor -- version %s", TERMTEX_VERSION);
+      if (welcomeLen > E_Config.screenCols)
+        welcomeLen = E_Config.screenCols;
+
       bufferAppend(ab, welcome, welcomeLen);
     }
     else
