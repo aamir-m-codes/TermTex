@@ -53,6 +53,11 @@ void bufferAppend(struct buffer *abuf, char *s, int len)
   abuf->len += len;
 }
 
+void bufFree(struct buffer *b)
+{
+  free(b->buf);
+}
+
 /*** Error Handling Section ***/
 void die(const char *err_msg)
 {
