@@ -19,7 +19,7 @@ void repositionCursor();
 void refreshEditorScreen();
 void drawEditorRows();
 int getWindowSize(int *rows, int *cols);
-int getCursorPosition();
+int getCursorPosition(int *rows, int *cols);
 
 /*** Data Section ***/
 struct editorConfig
@@ -80,12 +80,12 @@ char editorReadKey()
 int getWindowSize(int *rows, int *cols)
 {
   struct winsize wsz;
-  if (1 || ioctl(STDOUT_FILENO, TIOCGWINSZ, &wsz) == -1 || wsz.ws_col == 0)
+  if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &wsz) == -1 || wsz.ws_col == 0)
   {
     if (write(STDOUT_FILENO, "\x1b[999C\x1b[999B", 12) != 12)
       return -1;
 
-    return getCursorPosition();
+    return getCursorPosition(rows, cols);
   }
   else
   {
@@ -95,7 +95,7 @@ int getWindowSize(int *rows, int *cols)
   }
 }
 
-int getCursorPosition()
+int getCursorPosition(int *rows, int *cols)
 {
   if (write(STDOUT_FILENO, "\x1b[6n", 4) != 4)
     return -1;
@@ -114,10 +114,12 @@ int getCursorPosition()
   }
 
   buf[i] = '\0';
-  printf("\r\nBuffer -> '%s'\r\n", &buf[1]);
+  if (buf[0] != '\x1b' || buf[1] != '[')
+    return -1;
+  if (sscanf(&buf[2], "%d;%d", rows, cols) != 2)
+    return -1;
 
-  editorReadKey();
-  return -1;
+  return 0;
 }
 
 /*** Input section ***/
