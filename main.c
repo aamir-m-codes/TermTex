@@ -31,6 +31,8 @@ int getCursorPosition(int *rows, int *cols);
 /*** Data Section ***/
 struct editorConfig
 {
+  int cursor_x;
+  int cursor_y;
   int screenRows;
   int screenCols;
   struct termios original_term_attr;
@@ -197,6 +199,10 @@ void refreshEditorScreen()
   drawEditorRows(&ab);
   repositionCursor(&ab);
 
+  char buf[32];
+  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", E_Config.cursor_x + 1, E_Config.cursor_y + 1);
+  bufferAppend(&ab, buf, strlen(buf));
+
   write(STDOUT_FILENO, ab.buf, ab.len);
   bufFree(&ab);
 }
@@ -238,6 +244,8 @@ void drawEditorRows(struct buffer *ab)
 /*** init ***/
 void initEditor()
 {
+  E_Config.cursor_x = 0;
+  E_Config.cursor_y = 0;
   if (getWindowSize(&E_Config.screenRows, &E_Config.screenCols) == -1)
     die("Error in window size");
 }
