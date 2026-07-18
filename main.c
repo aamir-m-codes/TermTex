@@ -211,6 +211,17 @@ void drawEditorRows(struct buffer *ab)
       int welcomeLen = snprintf(welcome, sizeof(welcome), "Welcome to TermTex Editor -- version %s", TERMTEX_VERSION);
       if (welcomeLen > E_Config.screenCols)
         welcomeLen = E_Config.screenCols;
+      int padding = (E_Config.screenCols - welcomeLen) / 2;
+      if (padding)
+      {
+        bufferAppend(ab, "~", 1);
+        padding--;
+      }
+      while (padding)
+      {
+        bufferAppend(ab, " ", 1);
+        padding--;
+      }
 
       bufferAppend(ab, welcome, welcomeLen);
     }
