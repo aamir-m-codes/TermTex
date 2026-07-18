@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <termios.h>
 #include <stdlib.h>
+#include <string.h>
 #include <ctype.h>
 #include <errno.h>
 #include <sys/ioctl.h>
@@ -39,6 +40,18 @@ struct buffer
 };
 
 #define BUFFER_INIT {NULL, 0}
+
+void bufferAppend(struct buffer *abuf, char *s, int len)
+{
+  char *new = realloc(abuf->buf, abuf->len + len);
+
+  if (new = NULL)
+    return;
+
+  memcpy(&new[abuf->len], s, len);
+  abuf->buf = new;
+  abuf->len += len;
+}
 
 /*** Error Handling Section ***/
 void die(const char *err_msg)
