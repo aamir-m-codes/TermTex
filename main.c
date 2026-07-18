@@ -19,10 +19,10 @@ void disableRawMode();
 void enableRawMode();
 char editorReadKey();
 void editorProcessKeyPress();
-void clearScreen();
-void repositionCursor();
+void clearScreen(struct buffer *ab);
+void repositionCursor(struct buffer *ab);
 void refreshEditorScreen();
-void drawEditorRows();
+void drawEditorRows(struct buffer *ab);
 int getWindowSize(int *rows, int *cols);
 int getCursorPosition(int *rows, int *cols);
 
@@ -65,8 +65,12 @@ void bufFree(struct buffer *b)
 /*** Error Handling Section ***/
 void die(const char *err_msg)
 {
-  clearScreen();
-  repositionCursor();
+  struct buffer ab = BUFFER_INIT;
+  clearScreen(&ab);
+  repositionCursor(&ab);
+
+  write(STDOUT_FILENO, ab.buf, ab.len);
+  bufFree(&ab);
   perror(err_msg);
   exit(1);
 }
@@ -160,39 +164,49 @@ void editorProcessKeyPress()
   switch (c)
   {
   case CTRL_KEY('q'):
-    clearScreen();
-    repositionCursor();
+    clearScreen(NULL);
+    repositionCursor(NULL);
     exit(0);
     break;
   }
 }
 
 /*** Output Section ***/
-void clearScreen()
+void clearScreen(struct buffer *ab)
 {
-  write(STDOUT_FILENO, "\x1b[2J", 4);
+  if (ab == NULL)
+    write(STDOUT_FILENO, "\x1b[2J", 4);
+  else
+    bufferAppend(ab, "\x1b[2J", 4);
 }
 
-void repositionCursor()
+void repositionCursor(struct buffer *ab)
 {
-  write(STDOUT_FILENO, "\x1b[H", 3);
+  if (ab == NULL)
+    write(STDOUT_FILENO, "\x1b[H", 3);
+  else
+    bufferAppend(ab, "\x1b[H", 3);
 }
 
 void refreshEditorScreen()
 {
-  clearScreen();
-  repositionCursor();
-  drawEditorRows();
-  repositionCursor();
+  struct buffer ab = BUFFER_INIT;
+  clearScreen(&ab);
+  repositionCursor(&ab);
+  drawEditorRows(&ab);
+  repositionCursor(&ab);
+
+  write(STDOUT_FILENO, ab.buf, ab.len);
+  bufFree(&ab);
 }
 
-void drawEditorRows()
+void drawEditorRows(struct buffer *ab)
 {
   for (int i = 0; i < E_Config.screenRows; i++)
   {
-    write(STDOUT_FILENO, "~", 1);
+    bufferAppend(ab, "~", 1);
     if (i < E_Config.screenRows - 1)
-      write(STDOUT_FILENO, "\r\n", 2);
+      bufferAppend(ab, "\r\n", 2);
   }
 }
 
