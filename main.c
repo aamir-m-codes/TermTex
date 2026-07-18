@@ -31,6 +31,15 @@ struct editorConfig
 
 struct editorConfig E_Config;
 
+/*** Buffer Section ***/
+struct buffer
+{
+  char *buf;
+  int len;
+};
+
+#define BUFFER_INIT {NULL, 0}
+
 /*** Error Handling Section ***/
 void die(const char *err_msg)
 {
