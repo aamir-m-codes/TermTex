@@ -49,7 +49,7 @@ void bufferAppend(struct buffer *abuf, char *s, int len)
 {
   char *new = realloc(abuf->buf, abuf->len + len);
 
-  if (new = NULL)
+  if (new == NULL)
     return;
 
   memcpy(&new[abuf->len], s, len);
