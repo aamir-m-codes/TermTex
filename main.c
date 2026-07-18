@@ -19,6 +19,7 @@ void repositionCursor();
 void refreshEditorScreen();
 void drawEditorRows();
 int getWindowSize(int *rows, int *cols);
+int getCursorPosition();
 
 /*** Data Section ***/
 struct editorConfig
@@ -83,8 +84,8 @@ int getWindowSize(int *rows, int *cols)
   {
     if (write(STDOUT_FILENO, "\x1b[999C\x1b[999B", 12) != 12)
       return -1;
-    editorReadKey();
-    return -1;
+
+    return getCursorPosition();
   }
   else
   {
@@ -92,6 +93,29 @@ int getWindowSize(int *rows, int *cols)
     *rows = wsz.ws_row;
     return 0;
   }
+}
+
+int getCursorPosition()
+{
+  if (write(STDOUT_FILENO, "\x1b[6n", 4) != 4)
+    return -1;
+
+  printf("\r\n");
+  char c;
+  while (read(STDIN_FILENO, &c, 1) == 1)
+  {
+    if (iscntrl(c))
+    {
+      printf("%d\r\n", c);
+    }
+    else
+    {
+      printf("%d ('%c')\r\n", c, c);
+    }
+  }
+
+  editorReadKey();
+  return -1;
 }
 
 /*** Input section ***/
