@@ -7,6 +7,8 @@
 #include <errno.h>
 #include <sys/ioctl.h>
 
+#define TERMTEX_VERSION "0.0.1"
+
 #define CTRL_KEY(key) ((key) & 0x1F)
 
 /*** Types declaration ***/
@@ -203,7 +205,16 @@ void drawEditorRows(struct buffer *ab)
 {
   for (int i = 0; i < E_Config.screenRows; i++)
   {
-    bufferAppend(ab, "~", 1);
+    if (i == E_Config.screenRows / 3)
+    {
+      char welcome[64];
+      int welcomeLen = snprintf(welcome, sizeof(welcome), "Welcome to TermTex Editor -- version %s", TERMTEX_VERSION);
+      bufferAppend(ab, welcome, welcomeLen);
+    }
+    else
+    {
+      bufferAppend(ab, "~", 1);
+    }
     bufferAppend(ab, "\x1b[K", 3);
     if (i < E_Config.screenRows - 1)
       bufferAppend(ab, "\r\n", 2);
