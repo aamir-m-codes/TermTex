@@ -33,6 +33,7 @@ void refreshEditorScreen();
 void drawEditorRows(struct buffer *ab);
 int getWindowSize(int *rows, int *cols);
 int getCursorPosition(int *rows, int *cols);
+void updateCursor(int c);
 
 /*** Data Section ***/
 struct editorConfig
@@ -119,7 +120,34 @@ int editorReadKey()
     if (nread == -1 && errno != EAGAIN)
       die("Error in read");
   }
-  return c;
+  if (c == '\x1b')
+  {
+    char seq[3];
+    if (read(STDIN_FILENO, &seq[0], 1) != 1)
+      return '\x1b';
+    if (read(STDIN_FILENO, &seq[1], 1) != 1)
+      return '\x1b';
+    if (seq[0] == '[')
+    {
+      switch (seq[1])
+      {
+      case 'A':
+        return UP_ARROW;
+      case 'B':
+        return DOWN_ARROW;
+      case 'C':
+        return RIGHT_ARROW;
+      case 'D':
+        return LEFT_ARROW;
+      }
+    }
+
+    return '\x1b';
+  }
+  else
+  {
+    return c;
+  }
 }
 
 int getWindowSize(int *rows, int *cols)
@@ -178,6 +206,31 @@ void editorProcessKeyPress()
     repositionCursor(NULL);
     exit(0);
     break;
+  case UP_ARROW:
+  case DOWN_ARROW:
+  case RIGHT_ARROW:
+  case LEFT_ARROW:
+    updateCursor(c);
+    break;
+  }
+}
+
+void updateCursor(int c)
+{
+  switch (c)
+  {
+  case UP_ARROW:
+    E_Config.cursor_y--;
+    break;
+  case DOWN_ARROW:
+    E_Config.cursor_y++;
+    break;
+  case RIGHT_ARROW:
+    E_Config.cursor_x++;
+    break;
+  case LEFT_ARROW:
+    E_Config.cursor_x--;
+    break;
   }
 }
 
@@ -206,7 +259,7 @@ void refreshEditorScreen()
   repositionCursor(&ab);
 
   char buf[32];
-  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", E_Config.cursor_x + 1, E_Config.cursor_y + 1);
+  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", E_Config.cursor_y + 1, E_Config.cursor_x + 1);
   bufferAppend(&ab, buf, strlen(buf));
 
   write(STDOUT_FILENO, ab.buf, ab.len);
