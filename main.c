@@ -25,7 +25,7 @@ struct buffer;
 void die(const char *err_msg);
 void disableRawMode();
 void enableRawMode();
-char editorReadKey();
+int editorReadKey();
 void editorProcessKeyPress();
 void clearScreen(struct buffer *ab);
 void repositionCursor(struct buffer *ab);
@@ -110,7 +110,7 @@ void enableRawMode()
     die("Error in tcsetattr");
 }
 
-char editorReadKey()
+int editorReadKey()
 {
   char c;
   int nread;
@@ -170,7 +170,7 @@ int getCursorPosition(int *rows, int *cols)
 /*** Input section ***/
 void editorProcessKeyPress()
 {
-  char c = editorReadKey();
+  int c = editorReadKey();
   switch (c)
   {
   case CTRL_KEY('q'):
