@@ -17,6 +17,7 @@
 #define RIGHT_ARROW 1002
 #define LEFT_ARROW 1003
 #define HOME_KEY 1004
+#define END_KEY 1005
 
 /*** Types declaration ***/
 struct editorConfig;
@@ -141,6 +142,9 @@ int editorReadKey()
           case '1':
           case '7':
             return HOME_KEY;
+          case '4':
+          case '8':
+            return END_KEY;
           }
         }
       }
@@ -158,6 +162,8 @@ int editorReadKey()
           return LEFT_ARROW;
         case 'H':
           return HOME_KEY;
+        case 'F':
+          return END_KEY;
         }
       }
     }
@@ -169,6 +175,8 @@ int editorReadKey()
         {
         case 'H':
           return HOME_KEY;
+        case 'F':
+          return END_KEY;
         }
       }
     }
@@ -242,6 +250,7 @@ void editorProcessKeyPress()
   case RIGHT_ARROW:
   case LEFT_ARROW:
   case HOME_KEY:
+  case END_KEY:
     updateCursor(c);
     break;
   }
@@ -269,6 +278,9 @@ void updateCursor(int c)
     break;
   case HOME_KEY:
     E_Config.cursor_x = 0;
+    break;
+  case END_KEY:
+    E_Config.cursor_x = E_Config.screenCols - 1;
     break;
   }
 }
