@@ -23,6 +23,7 @@
 #define DEL_KEY 1008
 
 /*** Types declaration ***/
+typedef struct eRow eRow;
 struct editorConfig;
 struct buffer;
 
@@ -41,12 +42,20 @@ int getCursorPosition(int *rows, int *cols);
 void updateCursor(int c);
 
 /*** Data Section ***/
+struct eRow
+{
+  int size;
+  char *chars;
+};
+
 struct editorConfig
 {
   int cursor_x;
   int cursor_y;
   int screenRows;
   int screenCols;
+  int numRows;
+  eRow row;
   struct termios original_term_attr;
 };
 
@@ -376,6 +385,7 @@ void initEditor()
 {
   E_Config.cursor_x = 0;
   E_Config.cursor_y = 0;
+  E_Config.numRows = 0;
   if (getWindowSize(&E_Config.screenRows, &E_Config.screenCols) == -1)
     die("Error in window size");
 }
