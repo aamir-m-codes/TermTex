@@ -130,18 +130,35 @@ int editorReadKey()
       return '\x1b';
     if (seq[0] == '[')
     {
-      switch (seq[1])
+      if (seq[1] >= '0' && seq[1] <= '9')
       {
-      case 'A':
-        return UP_ARROW;
-      case 'B':
-        return DOWN_ARROW;
-      case 'C':
-        return RIGHT_ARROW;
-      case 'D':
-        return LEFT_ARROW;
-      case 'H':
-        return HOME_KEY;
+        if (read(STDIN_FILENO, &seq[2], 1) != 1)
+          return '\x1b';
+        if (seq[2] == '~')
+        {
+          switch (seq[1])
+          {
+          case '1':
+          case '7':
+            return HOME_KEY;
+          }
+        }
+      }
+      else
+      {
+        switch (seq[1])
+        {
+        case 'A':
+          return UP_ARROW;
+        case 'B':
+          return DOWN_ARROW;
+        case 'C':
+          return RIGHT_ARROW;
+        case 'D':
+          return LEFT_ARROW;
+        case 'H':
+          return HOME_KEY;
+        }
       }
     }
     else
