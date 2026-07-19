@@ -7,9 +7,15 @@
 #include <errno.h>
 #include <sys/ioctl.h>
 
+/*** Defines Section ***/
 #define TERMTEX_VERSION "0.0.1"
 
 #define CTRL_KEY(key) ((key) & 0x1F)
+
+#define UP_ARROW 1000
+#define DOWN_ARROW 1001
+#define RIGHT_ARROW 1002
+#define LEFT_ARROW 1003
 
 /*** Types declaration ***/
 struct editorConfig;
