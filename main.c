@@ -220,16 +220,20 @@ void updateCursor(int c)
   switch (c)
   {
   case UP_ARROW:
-    E_Config.cursor_y--;
+    if (E_Config.cursor_y != 0)
+      E_Config.cursor_y--;
     break;
   case DOWN_ARROW:
-    E_Config.cursor_y++;
+    if (E_Config.cursor_y < E_Config.screenRows - 1)
+      E_Config.cursor_y++;
     break;
   case RIGHT_ARROW:
-    E_Config.cursor_x++;
+    if (E_Config.cursor_x < E_Config.screenCols - 1)
+      E_Config.cursor_x++;
     break;
   case LEFT_ARROW:
-    E_Config.cursor_x--;
+    if (E_Config.cursor_x != 0)
+      E_Config.cursor_x--;
     break;
   }
 }
