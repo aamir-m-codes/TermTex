@@ -18,6 +18,8 @@
 #define LEFT_ARROW 1003
 #define HOME_KEY 1004
 #define END_KEY 1005
+#define PAGE_UP 1006
+#define PAGE_DOWN 1007
 
 /*** Types declaration ***/
 struct editorConfig;
@@ -145,6 +147,10 @@ int editorReadKey()
           case '4':
           case '8':
             return END_KEY;
+          case '5':
+            return PAGE_UP;
+          case '6':
+            return PAGE_DOWN;
           }
         }
       }
@@ -253,6 +259,17 @@ void editorProcessKeyPress()
   case END_KEY:
     updateCursor(c);
     break;
+  case PAGE_UP:
+  case PAGE_DOWN:
+  {
+    int times = E_Config.screenRows;
+    while (times)
+    {
+      updateCursor(c == PAGE_UP ? UP_ARROW : DOWN_ARROW);
+      times--;
+    }
+  }
+  break;
   }
 }
 
