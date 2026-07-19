@@ -16,6 +16,7 @@
 #define DOWN_ARROW 1001
 #define RIGHT_ARROW 1002
 #define LEFT_ARROW 1003
+#define HOME_KEY 1004
 
 /*** Types declaration ***/
 struct editorConfig;
@@ -139,6 +140,19 @@ int editorReadKey()
         return RIGHT_ARROW;
       case 'D':
         return LEFT_ARROW;
+      case 'H':
+        return HOME_KEY;
+      }
+    }
+    else
+    {
+      if (seq[0] == 'O')
+      {
+        switch (seq[1])
+        {
+        case 'H':
+          return HOME_KEY;
+        }
       }
     }
 
@@ -210,6 +224,7 @@ void editorProcessKeyPress()
   case DOWN_ARROW:
   case RIGHT_ARROW:
   case LEFT_ARROW:
+  case HOME_KEY:
     updateCursor(c);
     break;
   }
@@ -234,6 +249,9 @@ void updateCursor(int c)
   case LEFT_ARROW:
     if (E_Config.cursor_x != 0)
       E_Config.cursor_x--;
+    break;
+  case HOME_KEY:
+    E_Config.cursor_x = 0;
     break;
   }
 }
