@@ -20,6 +20,7 @@
 #define END_KEY 1005
 #define PAGE_UP 1006
 #define PAGE_DOWN 1007
+#define DEL_KEY 1008
 
 /*** Types declaration ***/
 struct editorConfig;
@@ -151,6 +152,8 @@ int editorReadKey()
             return PAGE_UP;
           case '6':
             return PAGE_DOWN;
+          case '3':
+            return DEL_KEY;
           }
         }
       }
