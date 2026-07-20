@@ -351,29 +351,40 @@ void drawEditorRows(struct buffer *ab)
 {
   for (int i = 0; i < E_Config.screenRows; i++)
   {
-    if (i == E_Config.screenRows / 3)
+    if (i >= E_Config.numRows)
     {
-      char welcome[64];
-      int welcomeLen = snprintf(welcome, sizeof(welcome), "Welcome to TermTex Editor -- version %s", TERMTEX_VERSION);
-      if (welcomeLen > E_Config.screenCols)
-        welcomeLen = E_Config.screenCols;
-      int padding = (E_Config.screenCols - welcomeLen) / 2;
-      if (padding)
+
+      if (i == E_Config.screenRows / 3)
+      {
+        char welcome[64];
+        int welcomeLen = snprintf(welcome, sizeof(welcome), "Welcome to TermTex Editor -- version %s", TERMTEX_VERSION);
+        if (welcomeLen > E_Config.screenCols)
+          welcomeLen = E_Config.screenCols;
+        int padding = (E_Config.screenCols - welcomeLen) / 2;
+        if (padding)
+        {
+          bufferAppend(ab, "~", 1);
+          padding--;
+        }
+        while (padding)
+        {
+          bufferAppend(ab, " ", 1);
+          padding--;
+        }
+
+        bufferAppend(ab, welcome, welcomeLen);
+      }
+      else
       {
         bufferAppend(ab, "~", 1);
-        padding--;
       }
-      while (padding)
-      {
-        bufferAppend(ab, " ", 1);
-        padding--;
-      }
-
-      bufferAppend(ab, welcome, welcomeLen);
     }
     else
     {
-      bufferAppend(ab, "~", 1);
+      int len = E_Config.row.size;
+      if (len > E_Config.screenCols)
+        len = E_Config.screenCols;
+      bufferAppend(ab, E_Config.row.chars, E_Config.row.size);
     }
     bufferAppend(ab, "\x1b[K", 3);
     if (i < E_Config.screenRows - 1)
