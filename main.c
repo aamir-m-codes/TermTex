@@ -1,3 +1,7 @@
+#define _DEFAULT_SOURCE
+#define _BSD_SOURCE
+#define _GNU_SOURCE
+
 #include <stdio.h>
 #include <unistd.h>
 #include <termios.h>
@@ -40,7 +44,7 @@ void drawEditorRows(struct buffer *ab);
 int getWindowSize(int *rows, int *cols);
 int getCursorPosition(int *rows, int *cols);
 void updateCursor(int c);
-void editorOpen();
+void editorOpen(char *filename);
 
 /*** Data Section ***/
 struct eRow
@@ -393,15 +397,30 @@ void drawEditorRows(struct buffer *ab)
 }
 
 /*** File I/O Section ***/
-void editorOpen()
+void editorOpen(char *filename)
 {
-  char *line = "First line in editor!";
-  int lineLen = 21;
-  E_Config.row.size = lineLen;
-  E_Config.row.chars = malloc(lineLen + 1);
-  memcpy(E_Config.row.chars, line, lineLen);
-  E_Config.row.chars[lineLen] = '\0';
-  E_Config.numRows = 1;
+  FILE *fileP = fopen(filename, "r");
+  if (!fileP)
+    die("Error in File Opening");
+
+  char *line = NULL;
+  size_t lineCap = 0;
+  ssize_t lineLen = getline(&line, &lineCap, fileP);
+  if (lineLen != -1)
+  {
+    while (lineLen > 0 && (line[lineLen - 1] == '\r' || line[lineLen - 1] == '\n'))
+    {
+      lineLen--;
+    }
+    E_Config.row.size = lineLen;
+    E_Config.row.chars = malloc(lineLen + 1);
+    memcpy(E_Config.row.chars, line, lineLen);
+    E_Config.row.chars[lineLen] = '\0';
+    E_Config.numRows = 1;
+  }
+
+  free(line);
+  fclose(fileP);
 }
 
 /*** init ***/
@@ -414,11 +433,14 @@ void initEditor()
     die("Error in window size");
 }
 
-int main()
+int main(int argc, char *argv[])
 {
   enableRawMode();
   initEditor();
-  editorOpen();
+  if (argc >= 2)
+  {
+    editorOpen(argv[1]);
+  }
   while (1)
   {
     refreshEditorScreen();
