@@ -40,6 +40,7 @@ void drawEditorRows(struct buffer *ab);
 int getWindowSize(int *rows, int *cols);
 int getCursorPosition(int *rows, int *cols);
 void updateCursor(int c);
+void editorOpen();
 
 /*** Data Section ***/
 struct eRow
@@ -378,6 +379,18 @@ void drawEditorRows(struct buffer *ab)
     if (i < E_Config.screenRows - 1)
       bufferAppend(ab, "\r\n", 2);
   }
+}
+
+/*** File I/O Section ***/
+void editorOpen()
+{
+  char *line = "First line in editor!";
+  int lineLen = 21;
+  E_Config.row.size = lineLen;
+  E_Config.row.chars = malloc(lineLen + 1);
+  memcpy(E_Config.row.chars, line, lineLen);
+  E_Config.row.chars[lineLen] = '\0';
+  E_Config.numRows = 1;
 }
 
 /*** init ***/
