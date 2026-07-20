@@ -354,7 +354,7 @@ void drawEditorRows(struct buffer *ab)
     if (i >= E_Config.numRows)
     {
 
-      if (i == E_Config.screenRows / 3)
+      if (E_Config.numRows == 0 && i == E_Config.screenRows / 3)
       {
         char welcome[64];
         int welcomeLen = snprintf(welcome, sizeof(welcome), "Welcome to TermTex Editor -- version %s", TERMTEX_VERSION);
