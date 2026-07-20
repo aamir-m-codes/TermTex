@@ -407,6 +407,7 @@ int main()
 {
   enableRawMode();
   initEditor();
+  editorOpen();
   while (1)
   {
     refreshEditorScreen();
