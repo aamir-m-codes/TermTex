@@ -45,6 +45,7 @@ int getWindowSize(int *rows, int *cols);
 int getCursorPosition(int *rows, int *cols);
 void updateCursor(int c);
 void editorOpen(char *filename);
+void appendEditorRow(char *line, size_t lineLen);
 
 /*** Data Section ***/
 struct eRow
@@ -60,7 +61,7 @@ struct editorConfig
   int screenRows;
   int screenCols;
   int numRows;
-  eRow row;
+  eRow *row;
   struct termios original_term_attr;
 };
 
@@ -385,15 +386,27 @@ void drawEditorRows(struct buffer *ab)
     }
     else
     {
-      int len = E_Config.row.size;
+      int len = E_Config.row[i].size;
       if (len > E_Config.screenCols)
         len = E_Config.screenCols;
-      bufferAppend(ab, E_Config.row.chars, E_Config.row.size);
+      bufferAppend(ab, E_Config.row[i].chars, len);
     }
     bufferAppend(ab, "\x1b[K", 3);
     if (i < E_Config.screenRows - 1)
       bufferAppend(ab, "\r\n", 2);
   }
+}
+
+/*** Row Operations Section ***/
+void appendEditorRow(char *line, size_t lineLen)
+{
+  E_Config.row = realloc(E_Config.row, sizeof(eRow) * (E_Config.numRows + 1));
+  int at = E_Config.numRows;
+  E_Config.row[at].size = lineLen;
+  E_Config.row[at].chars = malloc(lineLen + 1);
+  memcpy(E_Config.row[at].chars, line, lineLen);
+  E_Config.row[at].chars[lineLen] = '\0';
+  E_Config.numRows++;
 }
 
 /*** File I/O Section ***/
@@ -405,18 +418,14 @@ void editorOpen(char *filename)
 
   char *line = NULL;
   size_t lineCap = 0;
-  ssize_t lineLen = getline(&line, &lineCap, fileP);
-  if (lineLen != -1)
+  ssize_t lineLen;
+  while ((lineLen = getline(&line, &lineCap, fileP)) != -1)
   {
     while (lineLen > 0 && (line[lineLen - 1] == '\r' || line[lineLen - 1] == '\n'))
     {
       lineLen--;
     }
-    E_Config.row.size = lineLen;
-    E_Config.row.chars = malloc(lineLen + 1);
-    memcpy(E_Config.row.chars, line, lineLen);
-    E_Config.row.chars[lineLen] = '\0';
-    E_Config.numRows = 1;
+    appendEditorRow(line, lineLen);
   }
 
   free(line);
@@ -429,6 +438,7 @@ void initEditor()
   E_Config.cursor_x = 0;
   E_Config.cursor_y = 0;
   E_Config.numRows = 0;
+  E_Config.row = NULL;
   if (getWindowSize(&E_Config.screenRows, &E_Config.screenCols) == -1)
     die("Error in window size");
 }
