@@ -412,6 +412,16 @@ void editorScroll()
   {
     E_Config.row_offset = E_Config.cursor_y - E_Config.screenRows + 1;
   }
+
+  if (E_Config.cursor_x < E_Config.col_offset)
+  {
+    E_Config.col_offset = E_Config.cursor_x;
+  }
+
+  if (E_Config.cursor_x >= E_Config.col_offset + E_Config.screenCols)
+  {
+    E_Config.col_offset = E_Config.cursor_x - E_Config.screenCols + 1;
+  }
 }
 
 /*** Row Operations Section ***/
