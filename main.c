@@ -54,6 +54,7 @@ void appendEditorRow(char *line, size_t lineLen);
 void editorScroll();
 void statusBar(struct buffer *ab);
 void setStatusMessage(const char *fmt, ...);
+void statusMessage(struct buffer *ab);
 
 /*** Data Section ***/
 struct eRow
@@ -399,6 +400,7 @@ void refreshEditorScreen()
   repositionCursor(&ab);
   drawEditorRows(&ab);
   statusBar(&ab);
+  statusMessage(&ab);
   repositionCursor(&ab);
 
   char buf[32];
@@ -513,6 +515,16 @@ void setStatusMessage(const char *fmt, ...)
   vsnprintf(E_Config.statusMsg, sizeof(E_Config.statusMsg), fmt, ap);
   va_end(ap);
   E_Config.status_msg_time = time(NULL);
+}
+
+void statusMessage(struct buffer *ab)
+{
+  bufferAppend(ab, "\x1b[K", 3);
+  int msgLen = strlen(E_Config.statusMsg);
+  if (msgLen > E_Config.screenCols)
+    msgLen = E_Config.screenCols;
+  if (msgLen && time(NULL) - E_Config.status_msg_time < 5)
+    bufferAppend(ab, E_Config.statusMsg, msgLen);
 }
 
 /*** Row Operations Section ***/
