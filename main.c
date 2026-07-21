@@ -477,14 +477,24 @@ void statusBar(struct buffer *ab)
 {
   bufferAppend(ab, "\x1b[7m", 4);
   char status[80];
+  char cursorStatus[80];
   size_t len = snprintf(status, sizeof(status), " %.20s - %d Lines", E_Config.filename, E_Config.numRows);
   if (len > E_Config.screenCols)
     len = E_Config.screenCols;
   bufferAppend(ab, status, len);
+  size_t cLen = snprintf(cursorStatus, sizeof(cursorStatus), "Ln %d,Col %d", E_Config.cursor_y + 1, E_Config.cursor_x + 1);
   while (len < E_Config.screenCols)
   {
-    bufferAppend(ab, " ", 1);
-    len++;
+    if (E_Config.screenCols - len == cLen)
+    {
+      bufferAppend(ab, cursorStatus, cLen);
+      break;
+    }
+    else
+    {
+      bufferAppend(ab, " ", 1);
+      len++;
+    }
   }
   bufferAppend(ab, "\x1b[m", 3);
 }
