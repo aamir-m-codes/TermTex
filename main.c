@@ -8,6 +8,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 #include <ctype.h>
 #include <errno.h>
 #include <sys/ioctl.h>
@@ -52,6 +53,7 @@ void editorOpen(char *filename);
 void appendEditorRow(char *line, size_t lineLen);
 void editorScroll();
 void statusBar(struct buffer *ab);
+void setStatusMessage(const char *fmt, ...);
 
 /*** Data Section ***/
 struct eRow
@@ -504,6 +506,15 @@ void statusBar(struct buffer *ab)
   bufferAppend(ab, "\r\n", 2);
 }
 
+void setStatusMessage(const char *fmt, ...)
+{
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(E_Config.statusMsg, sizeof(E_Config.statusMsg), fmt, ap);
+  va_end(ap);
+  E_Config.status_msg_time = time(NULL);
+}
+
 /*** Row Operations Section ***/
 void appendEditorRow(char *line, size_t lineLen)
 {
@@ -567,6 +578,7 @@ int main(int argc, char *argv[])
   {
     editorOpen(argv[1]);
   }
+  setStatusMessage("Help: Crtl-Q = Quit");
   while (1)
   {
     refreshEditorScreen();
