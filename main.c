@@ -348,7 +348,7 @@ void refreshEditorScreen()
   repositionCursor(&ab);
 
   char buf[32];
-  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E_Config.cursor_y - E_Config.row_offset) + 1, E_Config.cursor_x + 1);
+  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E_Config.cursor_y - E_Config.row_offset) + 1, (E_Config.cursor_x - E_Config.col_offset) + 1);
   bufferAppend(&ab, buf, strlen(buf));
 
   write(STDOUT_FILENO, ab.buf, ab.len);
@@ -389,10 +389,12 @@ void drawEditorRows(struct buffer *ab)
     }
     else
     {
-      int len = E_Config.row[fileRow].size;
+      int len = E_Config.row[fileRow].size - E_Config.col_offset;
+      if (len < 0)
+        len = 0;
       if (len > E_Config.screenCols)
         len = E_Config.screenCols;
-      bufferAppend(ab, E_Config.row[fileRow].chars, len);
+      bufferAppend(ab, &E_Config.row[fileRow].chars[E_Config.col_offset], len);
     }
     bufferAppend(ab, "\x1b[K", 3);
     if (i < E_Config.screenRows - 1)
