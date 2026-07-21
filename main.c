@@ -443,8 +443,7 @@ void drawEditorRows(struct buffer *ab)
       bufferAppend(ab, &E_Config.row[fileRow].chars[E_Config.col_offset], len);
     }
     bufferAppend(ab, "\x1b[K", 3);
-    if (i < E_Config.screenRows - 1)
-      bufferAppend(ab, "\r\n", 2);
+    bufferAppend(ab, "\r\n", 2);
   }
 }
 
@@ -517,6 +516,7 @@ void initEditor()
   E_Config.row = NULL;
   if (getWindowSize(&E_Config.screenRows, &E_Config.screenCols) == -1)
     die("Error in window size");
+  E_Config.screenRows -= 1;
 }
 
 int main(int argc, char *argv[])
