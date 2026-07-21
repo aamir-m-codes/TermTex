@@ -306,7 +306,7 @@ void updateCursor(int c)
       E_Config.cursor_y++;
     break;
   case RIGHT_ARROW:
-    if (E_Config.cursor_x < E_Config.screenCols - 1)
+    if (E_Config.cursor_x != E_Config.screenCols - 1)
       E_Config.cursor_x++;
     break;
   case LEFT_ARROW:
