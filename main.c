@@ -60,6 +60,7 @@ struct editorConfig
   int cursor_x;
   int cursor_y;
   int row_offset;
+  int col_offset;
   int screenRows;
   int screenCols;
   int numRows;
@@ -454,6 +455,7 @@ void initEditor()
   E_Config.cursor_x = 0;
   E_Config.cursor_y = 0;
   E_Config.row_offset = 0;
+  E_Config.col_offset = 0;
   E_Config.numRows = 0;
   E_Config.row = NULL;
   if (getWindowSize(&E_Config.screenRows, &E_Config.screenCols) == -1)
