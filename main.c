@@ -338,7 +338,7 @@ void updateCursor(int c)
     {
       E_Config.cursor_x++;
     }
-    else if (E_Config.cursor_y < E_Config.numRows)
+    else if (E_Config.cursor_y < E_Config.numRows - 1)
     {
       E_Config.cursor_y++;
       E_Config.cursor_x = 0;
