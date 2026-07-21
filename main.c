@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <termios.h>
+#include <time.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -69,6 +70,8 @@ struct editorConfig
   int screenCols;
   int numRows;
   char *filename;
+  char statusMsg[80];
+  time_t status_msg_time;
   eRow *row;
   struct termios original_term_attr;
 };
@@ -547,6 +550,8 @@ void initEditor()
   E_Config.col_offset = 0;
   E_Config.numRows = 0;
   E_Config.filename = NULL;
+  E_Config.statusMsg[0] = '\0';
+  E_Config.status_msg_time = 0;
   E_Config.row = NULL;
   if (getWindowSize(&E_Config.screenRows, &E_Config.screenCols) == -1)
     die("Error in window size");
