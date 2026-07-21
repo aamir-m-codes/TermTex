@@ -326,6 +326,11 @@ void updateCursor(int c)
       E_Config.cursor_x = row->size;
     break;
   }
+
+  row = (E_Config.cursor_y >= E_Config.numRows) ? NULL : &E_Config.row[E_Config.cursor_y];
+  int rowLen = (row) ? row->size : 0;
+  if (E_Config.cursor_x > rowLen)
+    E_Config.cursor_x = rowLen;
 }
 
 /*** Output Section ***/
