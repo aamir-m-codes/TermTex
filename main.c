@@ -68,6 +68,7 @@ struct editorConfig
   int screenRows;
   int screenCols;
   int numRows;
+  char *filename;
   eRow *row;
   struct termios original_term_attr;
 };
@@ -499,6 +500,9 @@ void appendEditorRow(char *line, size_t lineLen)
 /*** File I/O Section ***/
 void editorOpen(char *filename)
 {
+  free(E_Config.filename);
+  E_Config.filename = strdup(filename);
+
   FILE *fileP = fopen(filename, "r");
   if (!fileP)
     die("Error in File Opening");
@@ -527,6 +531,7 @@ void initEditor()
   E_Config.row_offset = 0;
   E_Config.col_offset = 0;
   E_Config.numRows = 0;
+  E_Config.filename = NULL;
   E_Config.row = NULL;
   if (getWindowSize(&E_Config.screenRows, &E_Config.screenCols) == -1)
     die("Error in window size");
