@@ -501,6 +501,7 @@ void statusBar(struct buffer *ab)
     }
   }
   bufferAppend(ab, "\x1b[m", 3);
+  bufferAppend(ab, "\r\n", 2);
 }
 
 /*** Row Operations Section ***/
@@ -555,7 +556,7 @@ void initEditor()
   E_Config.row = NULL;
   if (getWindowSize(&E_Config.screenRows, &E_Config.screenCols) == -1)
     die("Error in window size");
-  E_Config.screenRows -= 1;
+  E_Config.screenRows -= 2;
 }
 
 int main(int argc, char *argv[])
