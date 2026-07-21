@@ -46,6 +46,7 @@ int getCursorPosition(int *rows, int *cols);
 void updateCursor(int c);
 void editorOpen(char *filename);
 void appendEditorRow(char *line, size_t lineLen);
+void editorScroll();
 
 /*** Data Section ***/
 struct eRow
@@ -301,7 +302,7 @@ void updateCursor(int c)
       E_Config.cursor_y--;
     break;
   case DOWN_ARROW:
-    if (E_Config.cursor_y < E_Config.screenRows - 1)
+    if (E_Config.cursor_y < E_Config.numRows)
       E_Config.cursor_y++;
     break;
   case RIGHT_ARROW:
@@ -340,13 +341,14 @@ void repositionCursor(struct buffer *ab)
 
 void refreshEditorScreen()
 {
+  editorScroll();
   struct buffer ab = BUFFER_INIT;
   repositionCursor(&ab);
   drawEditorRows(&ab);
   repositionCursor(&ab);
 
   char buf[32];
-  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", E_Config.cursor_y + 1, E_Config.cursor_x + 1);
+  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E_Config.cursor_y - E_Config.row_offset) + 1, E_Config.cursor_x + 1);
   bufferAppend(&ab, buf, strlen(buf));
 
   write(STDOUT_FILENO, ab.buf, ab.len);
@@ -357,9 +359,9 @@ void drawEditorRows(struct buffer *ab)
 {
   for (int i = 0; i < E_Config.screenRows; i++)
   {
-    if (i >= E_Config.numRows)
+    int fileRow = i + E_Config.row_offset;
+    if (fileRow >= E_Config.numRows)
     {
-
       if (E_Config.numRows == 0 && i == E_Config.screenRows / 3)
       {
         char welcome[64];
@@ -387,14 +389,27 @@ void drawEditorRows(struct buffer *ab)
     }
     else
     {
-      int len = E_Config.row[i].size;
+      int len = E_Config.row[fileRow].size;
       if (len > E_Config.screenCols)
         len = E_Config.screenCols;
-      bufferAppend(ab, E_Config.row[i].chars, len);
+      bufferAppend(ab, E_Config.row[fileRow].chars, len);
     }
     bufferAppend(ab, "\x1b[K", 3);
     if (i < E_Config.screenRows - 1)
       bufferAppend(ab, "\r\n", 2);
+  }
+}
+
+void editorScroll()
+{
+  if (E_Config.cursor_y < E_Config.row_offset)
+  {
+    E_Config.row_offset = E_Config.cursor_y;
+  }
+
+  if (E_Config.cursor_y >= E_Config.row_offset + E_Config.screenRows)
+  {
+    E_Config.row_offset = E_Config.cursor_y - E_Config.screenRows + 1;
   }
 }
 
