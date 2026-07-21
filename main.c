@@ -322,7 +322,8 @@ void updateCursor(int c)
     E_Config.cursor_x = 0;
     break;
   case END_KEY:
-    E_Config.cursor_x = E_Config.screenCols - 1;
+    if (row)
+      E_Config.cursor_x = row->size;
     break;
   }
 }
