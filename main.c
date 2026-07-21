@@ -286,11 +286,32 @@ void editorProcessKeyPress()
   case PAGE_UP:
   case PAGE_DOWN:
   {
-    int times = E_Config.screenRows;
-    while (times)
+    if (c == PAGE_UP && E_Config.cursor_y != E_Config.row_offset)
     {
-      updateCursor(c == PAGE_UP ? UP_ARROW : DOWN_ARROW);
-      times--;
+      E_Config.cursor_y = E_Config.row_offset;
+    }
+    else if (c == PAGE_DOWN && E_Config.cursor_y != E_Config.row_offset + E_Config.screenRows - 1)
+    {
+      E_Config.cursor_y = E_Config.row_offset + E_Config.screenRows - 1;
+      if (E_Config.cursor_y > E_Config.numRows)
+      {
+        E_Config.cursor_y = E_Config.numRows - 1;
+        E_Config.cursor_x = E_Config.row[E_Config.cursor_y].size;
+      }
+    }
+    else
+    {
+      if (E_Config.cursor_y == 0)
+      {
+        E_Config.cursor_x = 0;
+        break;
+      }
+      int times = E_Config.screenRows;
+      while (times)
+      {
+        updateCursor(c == PAGE_UP ? UP_ARROW : DOWN_ARROW);
+        times--;
+      }
     }
   }
   break;
