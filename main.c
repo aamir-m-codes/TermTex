@@ -32,6 +32,8 @@ struct editorConfig;
 struct buffer;
 
 /*** Functions Prototype ***/
+void bufferAppend(struct buffer *abuf, char *s, int len);
+void bufFree(struct buffer *b);
 void die(const char *err_msg);
 void disableRawMode();
 void enableRawMode();
@@ -43,6 +45,7 @@ void refreshEditorScreen();
 void drawEditorRows(struct buffer *ab);
 int getWindowSize(int *rows, int *cols);
 int getCursorPosition(int *rows, int *cols);
+void initEditor();
 void updateCursor(int c);
 void editorOpen(char *filename);
 void appendEditorRow(char *line, size_t lineLen);
