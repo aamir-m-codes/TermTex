@@ -299,6 +299,7 @@ void editorProcessKeyPress()
 
 void updateCursor(int c)
 {
+  eRow *row = (E_Config.cursor_y >= E_Config.numRows) ? NULL : &E_Config.row[E_Config.cursor_y];
   switch (c)
   {
   case UP_ARROW:
@@ -310,7 +311,8 @@ void updateCursor(int c)
       E_Config.cursor_y++;
     break;
   case RIGHT_ARROW:
-    E_Config.cursor_x++;
+    if (row && E_Config.cursor_x < row->size)
+      E_Config.cursor_x++;
     break;
   case LEFT_ARROW:
     if (E_Config.cursor_x != 0)
