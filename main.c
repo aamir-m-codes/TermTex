@@ -50,6 +50,7 @@ void updateCursor(int c);
 void editorOpen(char *filename);
 void appendEditorRow(char *line, size_t lineLen);
 void editorScroll();
+void statusBar(struct buffer *ab);
 
 /*** Data Section ***/
 struct eRow
@@ -391,6 +392,7 @@ void refreshEditorScreen()
   struct buffer ab = BUFFER_INIT;
   repositionCursor(&ab);
   drawEditorRows(&ab);
+  statusBar(&ab);
   repositionCursor(&ab);
 
   char buf[32];
@@ -468,6 +470,18 @@ void editorScroll()
   {
     E_Config.col_offset = E_Config.cursor_x - E_Config.screenCols + 1;
   }
+}
+
+void statusBar(struct buffer *ab)
+{
+  bufferAppend(ab, "\x1b[7m", 4);
+  size_t len = 0;
+  while (len < E_Config.screenCols)
+  {
+    bufferAppend(ab, " ", 1);
+    len++;
+  }
+  bufferAppend(ab, "\x1b[m", 3);
 }
 
 /*** Row Operations Section ***/
