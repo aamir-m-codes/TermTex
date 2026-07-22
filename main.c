@@ -613,6 +613,10 @@ void rowFree(eRow *row)
 /*** Editor Operations Section ***/
 void editorInsertChar(int c)
 {
+  if (E_Config.cursor_y == E_Config.numRows)
+  {
+    appendEditorRow("", 0);
+  }
   rowInsertChar(&E_Config.row[E_Config.cursor_y], E_Config.cursor_x, c);
   E_Config.cursor_x++;
 }
