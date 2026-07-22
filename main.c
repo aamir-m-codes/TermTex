@@ -18,6 +18,7 @@
 
 #define CTRL_KEY(key) ((key) & 0x1F)
 
+#define BACKSPACE 127
 #define UP_ARROW 1000
 #define DOWN_ARROW 1001
 #define RIGHT_ARROW 1002
@@ -280,11 +281,16 @@ void editorProcessKeyPress()
   int c = editorReadKey();
   switch (c)
   {
+  case '\r':
+    /* TODO */
+    break;
+
   case CTRL_KEY('q'):
     clearScreen(NULL);
     repositionCursor(NULL);
     exit(0);
     break;
+
   case UP_ARROW:
   case DOWN_ARROW:
   case RIGHT_ARROW:
@@ -293,6 +299,7 @@ void editorProcessKeyPress()
   case END_KEY:
     updateCursor(c);
     break;
+
   case PAGE_UP:
   case PAGE_DOWN:
   {
@@ -325,6 +332,18 @@ void editorProcessKeyPress()
     }
   }
   break;
+
+  case BACKSPACE:
+  case DEL_KEY:
+  case CTRL_KEY('h'):
+    /* TODO */
+    break;
+
+  case CTRL_KEY('l'):
+  case '\x1b':
+    /* IGNORE THEM for now because it escape*/
+    break;
+
   default:
     editorInsertChar(c);
     break;
