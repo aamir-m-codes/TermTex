@@ -58,6 +58,8 @@ void setStatusMessage(const char *fmt, ...);
 void statusMessage(struct buffer *ab);
 void rowInsertChar(eRow *row, int at, char c);
 void editorInsertChar(int c);
+void rowDelChar(eRow *row, int at);
+void editorDelChar(int at);
 
 /*** Data Section ***/
 struct eRow
@@ -336,7 +338,7 @@ void editorProcessKeyPress()
   case BACKSPACE:
   case DEL_KEY:
   case CTRL_KEY('h'):
-    /* TODO */
+    editorDelChar(c);
     break;
 
   case CTRL_KEY('l'):
@@ -573,6 +575,14 @@ void rowInsertChar(eRow *row, int at, char c)
   row->size++;
 }
 
+void rowDelChar(eRow *row, int at)
+{
+  if (at < 0 || at > row->size)
+    return;
+  memmove(&row->chars[at], &row->chars[at + 1], row->size - at);
+  row->size--;
+}
+
 /*** Editor Operations Section ***/
 void editorInsertChar(int c)
 {
@@ -580,6 +590,14 @@ void editorInsertChar(int c)
   E_Config.cursor_x++;
 }
 
+void editorDelChar(int at)
+{
+  if (E_Config.cursor_x != 0)
+  {
+    rowDelChar(&E_Config.row[E_Config.cursor_y], E_Config.cursor_x - 1);
+    E_Config.cursor_x--;
+  }
+}
 /*** File I/O Section ***/
 void editorOpen(char *filename)
 {
