@@ -619,7 +619,9 @@ void editorInsertChar(int c)
 
 void editorDelChar(int at)
 {
-  if (E_Config.cursor_x != 0)
+  if (E_Config.cursor_x == 0 && E_Config.cursor_y == 0)
+    return;
+  if (E_Config.cursor_x > 0)
   {
     rowDelChar(&E_Config.row[E_Config.cursor_y], E_Config.cursor_x - 1);
     E_Config.cursor_x--;
@@ -632,6 +634,7 @@ void editorDelChar(int at)
     E_Config.cursor_y--;
   }
 }
+
 /*** File I/O Section ***/
 void editorOpen(char *filename)
 {
