@@ -338,6 +338,8 @@ void editorProcessKeyPress()
   case BACKSPACE:
   case DEL_KEY:
   case CTRL_KEY('h'):
+    if (c == DEL_KEY)
+      updateCursor(RIGHT_ARROW);
     editorDelChar(c);
     break;
 
