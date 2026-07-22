@@ -3,6 +3,7 @@
 #define _GNU_SOURCE
 
 #include <stdio.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <termios.h>
 #include <time.h>
@@ -65,6 +66,7 @@ void rowDel(int at);
 void rowFree(eRow *row);
 void editorInserNewLine();
 char *editorRowsToString(int *len);
+void editorSaveFile();
 
 /*** Data Section ***/
 struct eRow
@@ -297,6 +299,10 @@ void editorProcessKeyPress()
     clearScreen(NULL);
     repositionCursor(NULL);
     exit(0);
+    break;
+
+  case CTRL_KEY('s'):
+    editorSaveFile();
     break;
 
   case UP_ARROW:
@@ -714,6 +720,20 @@ char *editorRowsToString(int *len)
     p++;
   }
   return buf;
+}
+
+void editorSaveFile()
+{
+  if (E_Config.filename == NULL)
+    return;
+  int len;
+  char *buf = editorRowsToString(&len);
+
+  int file = open(E_Config.filename, O_RDWR | O_CREAT, 0644);
+  ftruncate(file, len);
+  write(file, buf, len);
+  close(file);
+  free(buf);
 }
 
 /*** init ***/
