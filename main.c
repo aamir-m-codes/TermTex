@@ -708,6 +708,7 @@ char *editorRowsToString(int *len)
   {
     total_len += E_Config.row[i].size + 1;
   }
+  total_len--;
   *len = total_len;
 
   char *buf = malloc(total_len);
@@ -716,8 +717,11 @@ char *editorRowsToString(int *len)
   {
     memcpy(p, E_Config.row[j].chars, E_Config.row[j].size);
     p += E_Config.row[j].size;
-    *p = '\n';
-    p++;
+    if (j < E_Config.numRows - 1)
+    {
+      *p = '\n';
+      p++;
+    }
   }
   return buf;
 }
