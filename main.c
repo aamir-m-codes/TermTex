@@ -16,6 +16,7 @@
 
 /*** Defines Section ***/
 #define TERMTEX_VERSION "0.0.1"
+#define QUIT_TIMES 3
 
 #define CTRL_KEY(key) ((key) & 0x1F)
 
@@ -288,6 +289,8 @@ int getCursorPosition(int *rows, int *cols)
 /*** Input section ***/
 void editorProcessKeyPress()
 {
+  static int quit_times = QUIT_TIMES;
+
   int c = editorReadKey();
   switch (c)
   {
@@ -296,6 +299,14 @@ void editorProcessKeyPress()
     break;
 
   case CTRL_KEY('q'):
+    if (E_Config.dirty && quit_times > 0)
+    {
+      setStatusMessage("WARNING!!! File has unsaved changes."
+                       "Press Ctrl-Q %d more times to quit.",
+                       quit_times);
+      quit_times--;
+      return;
+    }
     clearScreen(NULL);
     repositionCursor(NULL);
     exit(0);
@@ -364,6 +375,8 @@ void editorProcessKeyPress()
     editorInsertChar(c);
     break;
   }
+
+  quit_times = QUIT_TIMES;
 }
 
 void updateCursor(int c)
