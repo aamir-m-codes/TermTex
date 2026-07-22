@@ -785,7 +785,15 @@ char *editorRowsToString(int *len)
 void editorSaveFile()
 {
   if (E_Config.filename == NULL)
-    return;
+  {
+    E_Config.filename = editorPrompt("Saved as: %s (ESC to cancel)");
+    if (E_Config.filename == NULL)
+    {
+      setStatusMessage("Save aborted");
+      return;
+    }
+  }
+
   int len;
   char *buf = editorRowsToString(&len);
 
