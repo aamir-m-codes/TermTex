@@ -585,6 +585,7 @@ void rowInsertChar(eRow *row, int at, char c)
   memmove(&row->chars[at + 1], &row->chars[at], row->size - at + 1);
   row->chars[at] = c;
   row->size++;
+  E_Config.dirty++;
 }
 
 void rowDelChar(eRow *row, int at)
@@ -593,6 +594,7 @@ void rowDelChar(eRow *row, int at)
     return;
   memmove(&row->chars[at], &row->chars[at + 1], row->size - at);
   row->size--;
+  E_Config.dirty++;
 }
 
 void rowAppendString(eRow *row, char *s, int len)
@@ -610,6 +612,7 @@ void rowDel(int at)
   rowFree(&E_Config.row[at]);
   memmove(&E_Config.row[E_Config.cursor_y], &E_Config.row[E_Config.cursor_y + 1], (E_Config.numRows - at - 1) * sizeof(eRow));
   E_Config.numRows--;
+  E_Config.dirty++;
 }
 
 void rowFree(eRow *row)
@@ -662,6 +665,7 @@ void editorInserNewLine()
   }
   E_Config.cursor_x = 0;
   E_Config.cursor_y++;
+  E_Config.dirty++;
 }
 
 /*** File I/O Section ***/
