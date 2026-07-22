@@ -444,7 +444,12 @@ char *editorPrompt(char *prompt)
     refreshEditorScreen();
 
     int c = editorReadKey();
-    if (c == '\r')
+    if (c == BACKSPACE || c == CTRL_KEY('h') || c == DEL_KEY)
+    {
+      if (bufLen != 0)
+        buf[--bufLen] = '\0';
+    }
+    else if (c == '\r')
     {
       if (bufLen != 0)
       {
