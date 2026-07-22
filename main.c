@@ -68,6 +68,7 @@ void rowFree(eRow *row);
 void editorInserNewLine();
 char *editorRowsToString(int *len);
 void editorSaveFile();
+char *editorPrompt(char *prompt);
 
 /*** Data Section ***/
 struct eRow
@@ -427,6 +428,47 @@ void updateCursor(int c)
   int rowLen = (row) ? row->size : 0;
   if (E_Config.cursor_x > rowLen)
     E_Config.cursor_x = rowLen;
+}
+
+char *editorPrompt(char *prompt)
+{
+  size_t bufSize = 128;
+  char *buf = malloc(bufSize);
+
+  size_t bufLen = 0;
+  buf[0] = '\0';
+
+  while (1)
+  {
+    setStatusMessage(prompt, buf);
+    refreshEditorScreen();
+
+    int c = editorReadKey();
+    if (c == '\r')
+    {
+      if (bufLen != 0)
+      {
+        setStatusMessage("");
+        return buf;
+      }
+    }
+    else if (c == '\x1b')
+    {
+      setStatusMessage("");
+      free(buf);
+      return NULL;
+    }
+    else if (!iscntrl(c) && c < 128)
+    {
+      if (bufLen == bufSize - 1)
+      {
+        bufSize *= 2;
+        buf = realloc(buf, bufSize);
+      }
+      buf[bufLen++] = c;
+      buf[bufLen] = '\0';
+    }
+  }
 }
 
 /*** Output Section ***/
