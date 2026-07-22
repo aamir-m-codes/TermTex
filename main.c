@@ -518,8 +518,9 @@ void statusBar(struct buffer *ab)
   bufferAppend(ab, "\x1b[7m", 4);
   char status[80];
   char cursorStatus[80];
-  size_t len = snprintf(status, sizeof(status), " %.20s - %d Lines",
-                        E_Config.filename ? E_Config.filename : "[No Name]", E_Config.numRows);
+  size_t len = snprintf(status, sizeof(status), " %.20s - %d Lines %s",
+                        E_Config.filename ? E_Config.filename : "[No Name]", E_Config.numRows,
+                        E_Config.dirty ? "(Modified)" : "");
   if (len > E_Config.screenCols)
     len = E_Config.screenCols;
   bufferAppend(ab, status, len);
