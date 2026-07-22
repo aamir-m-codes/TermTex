@@ -699,6 +699,7 @@ void editorOpen(char *filename)
 
   free(line);
   fclose(fileP);
+  E_Config.dirty = 0;
 }
 
 char *editorRowsToString(int *len)
@@ -742,6 +743,7 @@ void editorSaveFile()
       {
         close(file);
         free(buf);
+        E_Config.dirty = 0;
         setStatusMessage("%d bytes written to disk", len);
         return;
       }
