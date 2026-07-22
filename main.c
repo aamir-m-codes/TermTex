@@ -60,6 +60,9 @@ void rowInsertChar(eRow *row, int at, char c);
 void editorInsertChar(int c);
 void rowDelChar(eRow *row, int at);
 void editorDelChar(int at);
+void rowAppendString(eRow *row, char *s, int len);
+void rowDel(int at);
+void rowFree(eRow *row);
 
 /*** Data Section ***/
 struct eRow
@@ -585,6 +588,28 @@ void rowDelChar(eRow *row, int at)
   row->size--;
 }
 
+void rowAppendString(eRow *row, char *s, int len)
+{
+  row->chars = realloc(row->chars, row->size + len + 1);
+  memcpy(&row->chars[row->size], s, len);
+  row->size += len;
+  row->chars[row->size] = '\0';
+}
+
+void rowDel(int at)
+{
+  if (at < 0 || at > E_Config.numRows)
+    return;
+  rowFree(&E_Config.row[at]);
+  memmove(&E_Config.row[E_Config.cursor_y], &E_Config.row[E_Config.cursor_y + 1], (E_Config.numRows - at - 1) * sizeof(eRow));
+  E_Config.numRows--;
+}
+
+void rowFree(eRow *row)
+{
+  free(row->chars);
+}
+
 /*** Editor Operations Section ***/
 void editorInsertChar(int c)
 {
@@ -598,6 +623,13 @@ void editorDelChar(int at)
   {
     rowDelChar(&E_Config.row[E_Config.cursor_y], E_Config.cursor_x - 1);
     E_Config.cursor_x--;
+  }
+  else
+  {
+    E_Config.cursor_x = E_Config.row[E_Config.cursor_y - 1].size;
+    rowAppendString(&E_Config.row[E_Config.cursor_y - 1], E_Config.row[E_Config.cursor_y].chars, E_Config.row[E_Config.cursor_y].size);
+    rowDel(E_Config.cursor_y);
+    E_Config.cursor_y--;
   }
 }
 /*** File I/O Section ***/
