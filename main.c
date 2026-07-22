@@ -63,6 +63,7 @@ void editorDelChar(int at);
 void rowAppendString(eRow *row, char *s, int len);
 void rowDel(int at);
 void rowFree(eRow *row);
+void editorInserNewLine();
 
 /*** Data Section ***/
 struct eRow
@@ -287,7 +288,7 @@ void editorProcessKeyPress()
   switch (c)
   {
   case '\r':
-    /* TODO */
+    editorInserNewLine();
     break;
 
   case CTRL_KEY('q'):
@@ -641,6 +642,24 @@ void editorDelChar(int at)
     rowDel(E_Config.cursor_y);
     E_Config.cursor_y--;
   }
+}
+
+void editorInserNewLine()
+{
+  if (E_Config.cursor_x == 0)
+  {
+    rowAppendAt(E_Config.cursor_y + 1, "", 0);
+  }
+  else
+  {
+    struct eRow *row = &E_Config.row[E_Config.cursor_y];
+    rowAppendAt(E_Config.cursor_y + 1, &row->chars[E_Config.cursor_x], row->size - E_Config.cursor_x);
+    row = &E_Config.row[E_Config.cursor_y];
+    row->size = E_Config.cursor_x;
+    row->chars[row->size] = '\0';
+  }
+  E_Config.cursor_x = 0;
+  E_Config.cursor_y++;
 }
 
 /*** File I/O Section ***/
