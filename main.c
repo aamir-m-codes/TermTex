@@ -64,6 +64,7 @@ void rowAppendString(eRow *row, char *s, int len);
 void rowDel(int at);
 void rowFree(eRow *row);
 void editorInserNewLine();
+char *editorRowsToString(int *len);
 
 /*** Data Section ***/
 struct eRow
@@ -692,6 +693,27 @@ void editorOpen(char *filename)
 
   free(line);
   fclose(fileP);
+}
+
+char *editorRowsToString(int *len)
+{
+  int total_len = 0;
+  for (int i = 0; i < E_Config.numRows; i++)
+  {
+    total_len += E_Config.row[i].size + 1;
+  }
+  *len = total_len;
+
+  char *buf = malloc(total_len);
+  char *p = buf;
+  for (int j = 0; j < E_Config.numRows; j++)
+  {
+    memcpy(p, E_Config.row[j].chars, E_Config.row[j].size);
+    p += E_Config.row[j].size;
+    *p = '\n';
+    p++;
+  }
+  return buf;
 }
 
 /*** init ***/
