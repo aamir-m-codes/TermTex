@@ -61,7 +61,7 @@ void statusMessage(struct buffer *ab);
 void rowInsertChar(eRow *row, int at, char c);
 void editorInsertChar(int c);
 void rowDelChar(eRow *row, int at);
-void editorDelChar(int at);
+void editorDelChar();
 void rowAppendString(eRow *row, char *s, int len);
 void rowDel(int at);
 void rowFree(eRow *row);
@@ -361,11 +361,24 @@ void editorProcessKeyPress()
 
   case BACKSPACE:
   case DEL_KEY:
-  case CTRL_KEY('h'):
     if (c == DEL_KEY)
       updateCursor(RIGHT_ARROW);
-    editorDelChar(c);
+    editorDelChar();
     break;
+
+  case CTRL_KEY('h'):
+  {
+    if (E_Config.row[E_Config.cursor_y].chars[E_Config.cursor_x - 1] == ' ')
+    {
+      editorDelChar();
+      break;
+    }
+    while (E_Config.row[E_Config.cursor_y].chars[E_Config.cursor_x - 1] != ' ')
+    {
+      editorDelChar();
+    }
+  }
+  break;
 
   case CTRL_KEY('l'):
   case '\x1b':
@@ -698,7 +711,7 @@ void editorInsertChar(int c)
   E_Config.cursor_x++;
 }
 
-void editorDelChar(int at)
+void editorDelChar()
 {
   if (E_Config.cursor_x == 0 && E_Config.cursor_y == 0)
     return;
