@@ -81,6 +81,7 @@ struct editorConfig
   int screenRows;
   int screenCols;
   int numRows;
+  int dirty;
   char *filename;
   char statusMsg[80];
   time_t status_msg_time;
@@ -696,6 +697,7 @@ void initEditor()
   E_Config.row_offset = 0;
   E_Config.col_offset = 0;
   E_Config.numRows = 0;
+  E_Config.dirty = 0;
   E_Config.filename = NULL;
   E_Config.statusMsg[0] = '\0';
   E_Config.status_msg_time = 0;
