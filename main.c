@@ -55,6 +55,8 @@ void editorScroll();
 void statusBar(struct buffer *ab);
 void setStatusMessage(const char *fmt, ...);
 void statusMessage(struct buffer *ab);
+void rowInsertChar(eRow *row, int at, char c);
+void editorInsertChar(int c);
 
 /*** Data Section ***/
 struct eRow
@@ -323,6 +325,9 @@ void editorProcessKeyPress()
     }
   }
   break;
+  default:
+    editorInsertChar(c);
+    break;
   }
 }
 
@@ -537,6 +542,23 @@ void appendEditorRow(char *line, size_t lineLen)
   memcpy(E_Config.row[at].chars, line, lineLen);
   E_Config.row[at].chars[lineLen] = '\0';
   E_Config.numRows++;
+}
+
+void rowInsertChar(eRow *row, int at, char c)
+{
+  if (at < 0 || at > row->size)
+    at = row->size;
+  row->chars = realloc(row->chars, row->size + 2);
+  memmove(&row->chars[at + 1], &row->chars[at], row->size - at + 1);
+  row->chars[at] = c;
+  row->size++;
+}
+
+/*** Editor Operations Section ***/
+void editorInsertChar(int c)
+{
+  rowInsertChar(&E_Config.row[E_Config.cursor_y], E_Config.cursor_x, c);
+  E_Config.cursor_x++;
 }
 
 /*** File I/O Section ***/
