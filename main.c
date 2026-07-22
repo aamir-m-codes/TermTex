@@ -51,7 +51,7 @@ int getCursorPosition(int *rows, int *cols);
 void initEditor();
 void updateCursor(int c);
 void editorOpen(char *filename);
-void appendEditorRow(char *line, size_t lineLen);
+void rowAppendAt(int at, char *line, size_t lineLen);
 void editorScroll();
 void statusBar(struct buffer *ab);
 void setStatusMessage(const char *fmt, ...);
@@ -559,10 +559,14 @@ void statusMessage(struct buffer *ab)
 }
 
 /*** Row Operations Section ***/
-void appendEditorRow(char *line, size_t lineLen)
+void rowAppendAt(int at, char *line, size_t lineLen)
 {
+  if (at < 0 || at > E_Config.numRows)
+    return;
+
   E_Config.row = realloc(E_Config.row, sizeof(eRow) * (E_Config.numRows + 1));
-  int at = E_Config.numRows;
+  memmove(&E_Config.row[at + 1], &E_Config.row[at], sizeof(eRow) * (E_Config.numRows - at));
+
   E_Config.row[at].size = lineLen;
   E_Config.row[at].chars = malloc(lineLen + 1);
   memcpy(E_Config.row[at].chars, line, lineLen);
@@ -615,7 +619,7 @@ void editorInsertChar(int c)
 {
   if (E_Config.cursor_y == E_Config.numRows)
   {
-    appendEditorRow("", 0);
+    rowAppendAt(E_Config.numRows, "", 0);
   }
   rowInsertChar(&E_Config.row[E_Config.cursor_y], E_Config.cursor_x, c);
   E_Config.cursor_x++;
@@ -658,7 +662,7 @@ void editorOpen(char *filename)
     {
       lineLen--;
     }
-    appendEditorRow(line, lineLen);
+    rowAppendAt(E_Config.numRows, line, lineLen);
   }
 
   free(line);
