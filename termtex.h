@@ -88,6 +88,8 @@ struct editorPane
   int cursor_y;
   int row_offset;
   int col_offset;
+  int paneRows;
+  int paneCols;
   int numRows;
   int row_buffer_start;
   int row_buffer_end;
