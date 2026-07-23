@@ -37,6 +37,7 @@
 typedef struct eRow eRow;
 struct editorConfig;
 struct buffer;
+typedef struct editorPane pane;
 
 void bufferAppend(struct buffer *abuf, char *s, int len);
 void bufFree(struct buffer *b);
@@ -89,14 +90,32 @@ struct editorConfig
   int colMid;
   int numRows;
   int dirty;
+  int active_pane;
   char *filename;
   char statusMsg[80];
   time_t status_msg_time;
   eRow *row;
+  pane panes[4];
   struct termios original_term_attr;
 };
 
 extern struct editorConfig E_Config;
+
+struct editorPane
+{
+  int base_row;
+  int base_col;
+  int row_bound;
+  int col_bound;
+  int cursor_x;
+  int cursor_y;
+  int row_offset;
+  int col_offset;
+  int numRows;
+  int row_buffer_start;
+  int row_buffer_end;
+  int active;
+};
 
 struct buffer
 {
