@@ -20,6 +20,7 @@
 /*** Defines Section ***/
 #define TERMTEX_VERSION "0.0.1"
 #define QUIT_TIMES 3
+#define TOTAL_PANES 4
 
 #define CTRL_KEY(key) ((key) & 0x1F)
 
@@ -113,7 +114,7 @@ struct editorConfig
   char statusMsg[80];
   time_t status_msg_time;
   eRow *row;
-  pane panes[4];
+  pane panes[TOTAL_PANES];
   struct termios original_term_attr;
 };
 

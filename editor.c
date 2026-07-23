@@ -209,6 +209,24 @@ void initEditor()
   E_Config.statusMsg[0] = '\0';
   E_Config.status_msg_time = 0;
   E_Config.row = NULL;
+  for (int i = 0; i < TOTAL_PANES; i++)
+  {
+    E_Config.panes[i].base_row = 0;
+    E_Config.panes[i].base_col = 0;
+    E_Config.panes[i].row_bound = 0;
+    E_Config.panes[i].col_bound = 0;
+    E_Config.panes[i].cursor_x = 0;
+    E_Config.panes[i].cursor_y = 0;
+    E_Config.panes[i].row_offset = 0;
+    E_Config.panes[i].col_offset = 0;
+    E_Config.panes[i].paneRows = 0;
+    E_Config.panes[i].paneCols = 0;
+    E_Config.panes[i].numRows = 0;
+    E_Config.panes[i].row_buffer_start = 0;
+    E_Config.panes[i].row_buffer_end = 0;
+    E_Config.panes[i].active = (i == 0);
+  }
+  E_Config.active_pane = 0;
   if (getWindowSize(&E_Config.screenRows, &E_Config.screenCols) == -1)
     die("Error in window size");
   E_Config.screenRows -= 2;
