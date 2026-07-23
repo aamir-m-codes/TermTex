@@ -85,6 +85,8 @@ struct editorConfig
   int col_offset;
   int screenRows;
   int screenCols;
+  int rowMid;
+  int colMid;
   int numRows;
   int dirty;
   char *filename;

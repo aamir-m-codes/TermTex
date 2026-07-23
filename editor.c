@@ -201,6 +201,8 @@ void initEditor()
   E_Config.cursor_y = 0;
   E_Config.row_offset = 0;
   E_Config.col_offset = 0;
+  E_Config.rowMid = 0;
+  E_Config.colMid = 0;
   E_Config.numRows = 0;
   E_Config.dirty = 0;
   E_Config.filename = NULL;
@@ -210,4 +212,6 @@ void initEditor()
   if (getWindowSize(&E_Config.screenRows, &E_Config.screenCols) == -1)
     die("Error in window size");
   E_Config.screenRows -= 2;
+  E_Config.rowMid = E_Config.screenRows / 2;
+  E_Config.colMid = E_Config.screenCols / 2 + 1;
 }

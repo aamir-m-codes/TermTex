@@ -36,11 +36,9 @@ void refreshEditorScreen()
 
 void drawEditorRows(struct buffer *ab)
 {
-  int rowMid = E_Config.screenRows / 2;
-  int colMid = E_Config.screenCols / 2 + 1;
   for (int i = 0; i < E_Config.screenRows; i++)
   {
-    if (i + 1 == rowMid)
+    if (i + 1 == E_Config.rowMid)
     {
       for (int j = 0; j < E_Config.screenCols; j++)
       {
@@ -49,9 +47,9 @@ void drawEditorRows(struct buffer *ab)
     }
     bufferAppend(ab, "\x1b[K", 3);
     char buf[10];
-    int len = snprintf(buf, sizeof(buf), "\x1b[%d;%dH", i + 1, colMid);
+    int len = snprintf(buf, sizeof(buf), "\x1b[%d;%dH", i + 1, E_Config.colMid);
     bufferAppend(ab, buf, len);
-    if (i + 1 == rowMid)
+    if (i + 1 == E_Config.rowMid)
       bufferAppend(ab, "\u253c", 4);
     else
       bufferAppend(ab, "\u2502", 4);
