@@ -36,46 +36,25 @@ void refreshEditorScreen()
 
 void drawEditorRows(struct buffer *ab)
 {
+  int rowMid = E_Config.screenRows / 2;
+  int colMid = E_Config.screenCols / 2 + 1;
   for (int i = 0; i < E_Config.screenRows; i++)
   {
-    int fileRow = i + E_Config.row_offset;
-    if (fileRow >= E_Config.numRows)
+    if (i + 1 == rowMid)
     {
-      if (E_Config.numRows == 0 && i == E_Config.screenRows / 3)
+      for (int j = 0; j < E_Config.screenCols; j++)
       {
-        char welcome[64];
-        int welcomeLen = snprintf(welcome, sizeof(welcome), "Welcome to TermTex Editor -- version %s", TERMTEX_VERSION);
-        if (welcomeLen > E_Config.screenCols)
-          welcomeLen = E_Config.screenCols;
-        int padding = (E_Config.screenCols - welcomeLen) / 2;
-        if (padding)
-        {
-          bufferAppend(ab, "~", 1);
-          padding--;
-        }
-        while (padding)
-        {
-          bufferAppend(ab, " ", 1);
-          padding--;
-        }
-
-        bufferAppend(ab, welcome, welcomeLen);
+        bufferAppend(ab, "\u2500", 4);
       }
-      else
-      {
-        bufferAppend(ab, "~", 1);
-      }
-    }
-    else
-    {
-      int len = E_Config.row[fileRow].size - E_Config.col_offset;
-      if (len < 0)
-        len = 0;
-      if (len > E_Config.screenCols)
-        len = E_Config.screenCols;
-      bufferAppend(ab, &E_Config.row[fileRow].chars[E_Config.col_offset], len);
     }
     bufferAppend(ab, "\x1b[K", 3);
+    char buf[10];
+    int len = snprintf(buf, sizeof(buf), "\x1b[%d;%dH", i + 1, colMid);
+    bufferAppend(ab, buf, len);
+    if (i + 1 == rowMid)
+      bufferAppend(ab, "\u253c", 4);
+    else
+      bufferAppend(ab, "\u2502", 4);
     bufferAppend(ab, "\r\n", 2);
   }
 }
