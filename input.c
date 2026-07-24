@@ -108,7 +108,7 @@ void editorProcessKeyPress()
 void updateCursor(int c)
 {
   pane *p = &E_Config.panes[E_Config.active_pane];
-  eRow *row = (E_Config.cursor_y >= E_Config.numRows) ? NULL : &E_Config.row[E_Config.cursor_y];
+  eRow *row = (p->cursor_y >= p->numRows) ? NULL : &E_Config.row[p->row_buffer_start + p->cursor_y];
   switch (c)
   {
   case UP_ARROW:
