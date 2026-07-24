@@ -21,10 +21,10 @@ void refreshEditorScreen()
   editorScroll();
   struct buffer ab = BUFFER_INIT;
   repositionCursor(&ab);
-  drawEditorRows(&ab);
+  drawDivider(&ab);
   for (int i = 0; i < TOTAL_PANES; i++)
   {
-    drawPane(&ab, i);
+    drawPaneRows(&ab, i);
   }
   char resetXY[10];
   int xyLen = snprintf(resetXY, sizeof(resetXY), "\x1b[%d;0H", E_Config.screenRows + 1);
@@ -41,7 +41,7 @@ void refreshEditorScreen()
   bufFree(&ab);
 }
 
-void drawEditorRows(struct buffer *ab)
+void drawDivider(struct buffer *ab)
 {
   for (int i = 0; i < E_Config.screenRows + 1; i++)
   {
@@ -135,7 +135,7 @@ void statusMessage(struct buffer *ab)
     bufferAppend(ab, E_Config.statusMsg, msgLen);
 }
 
-void drawPane(struct buffer *ab, int p)
+void drawPaneRows(struct buffer *ab, int p)
 {
   if (p >= TOTAL_PANES)
     return;

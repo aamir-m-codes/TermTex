@@ -60,7 +60,7 @@ void editorProcessKeyPress();
 void clearScreen(struct buffer *ab);
 void repositionCursor(struct buffer *ab);
 void refreshEditorScreen();
-void drawEditorRows(struct buffer *ab);
+void drawDivider(struct buffer *ab);
 int getWindowSize(int *rows, int *cols);
 int getCursorPosition(int *rows, int *cols);
 void initEditor();
@@ -83,7 +83,7 @@ char *editorRowsToString(int *len);
 void editorSaveFile();
 char *editorPrompt(char *prompt);
 void loadPanesRows(fb *bl, int at, char *line, size_t lineLen);
-void drawPane(struct buffer *ab, int p);
+void drawPaneRows(struct buffer *ab, int p);
 
 struct eRow
 {
