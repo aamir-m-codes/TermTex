@@ -48,6 +48,7 @@ typedef struct eRow eRow;
 struct editorConfig;
 struct buffer;
 typedef struct editorPane pane;
+typedef struct fileBlock fb;
 
 void bufferAppend(struct buffer *abuf, char *s, int len);
 void bufFree(struct buffer *b);
@@ -86,6 +87,13 @@ struct eRow
 {
   int size;
   char *chars;
+};
+
+struct fileBlock
+{
+  int active;
+  char **start;
+  char **end;
 };
 
 struct editorPane
