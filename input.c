@@ -146,11 +146,11 @@ void updateCursor(int c)
     }
     break;
   case HOME_KEY:
-    E_Config.cursor_x = 0;
+    p->cursor_x = 0;
     break;
   case END_KEY:
     if (row)
-      E_Config.cursor_x = row->size;
+      p->cursor_x = row->size;
     break;
   }
 
