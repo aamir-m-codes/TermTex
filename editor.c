@@ -286,4 +286,12 @@ void initEditor()
   E_Config.panes[1].paneCols = E_Config.colMid - 1;
   E_Config.panes[2].paneCols = E_Config.screenCols - E_Config.colMid;
   E_Config.panes[3].paneCols = E_Config.screenCols - E_Config.colMid;
+  E_Config.panes[0].cursor_x = 0;
+  E_Config.panes[1].cursor_x = E_Config.colMid;
+  E_Config.panes[2].cursor_x = 0;
+  E_Config.panes[3].cursor_x = E_Config.colMid;
+  E_Config.panes[0].cursor_y = 0;
+  E_Config.panes[1].cursor_y = 0;
+  E_Config.panes[2].cursor_y = E_Config.rowMid;
+  E_Config.panes[3].cursor_y = E_Config.rowMid;
 }
