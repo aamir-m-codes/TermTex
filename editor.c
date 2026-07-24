@@ -212,7 +212,7 @@ void loadPanesRows(fb *bl, int at, char *line, size_t lineLen)
   {
     if (strncmp(line, bl->end[j], lineLen) == 0)
     {
-      E_Config.panes[j].row_buffer_end = at;
+      E_Config.panes[j].row_buffer_end = at - 1;
       bl->active = -1;
       return;
     }
