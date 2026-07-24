@@ -139,7 +139,7 @@ void updateCursor(int c)
     {
       p->cursor_x--;
     }
-    else if (p->cursor_x == 0 && p->cursor_y > p->base_row - 1)
+    else if (p->cursor_x == 0 && p->cursor_y > 0)
     {
       p->cursor_y--;
       p->cursor_x = E_Config.row[p->row_buffer_start + p->cursor_y].size;
