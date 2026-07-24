@@ -33,8 +33,9 @@ void refreshEditorScreen()
   statusMessage(&ab);
   repositionCursor(&ab);
 
+  pane *p = &E_Config.panes[E_Config.active_pane];
   char buf[32];
-  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E_Config.cursor_y - E_Config.row_offset) + 1, (E_Config.cursor_x - E_Config.col_offset) + 1);
+  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (p->cursor_y - p->row_offset) + 1, (p->cursor_x - p->col_offset) + 1);
   bufferAppend(&ab, buf, strlen(buf));
 
   write(STDOUT_FILENO, ab.buf, ab.len);
