@@ -96,6 +96,12 @@ struct fileBlock
   char **end;
 };
 
+#define INIT_FB ((fb){                                               \
+    .active = -1,                                                    \
+    .start = (char *[]){K_K_START, K_U_START, U_K_START, U_U_START}, \
+    .end = (char *[]){K_K_END, K_U_END, U_K_END, U_U_END},           \
+})
+
 struct editorPane
 {
   int base_row;
