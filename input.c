@@ -154,10 +154,10 @@ void updateCursor(int c)
     break;
   }
 
-  row = (E_Config.cursor_y >= E_Config.numRows) ? NULL : &E_Config.row[E_Config.cursor_y];
+  row = (p->cursor_y >= p->numRows) ? NULL : &E_Config.row[p->row_buffer_start + p->cursor_y];
   int rowLen = (row) ? row->size : 0;
-  if (E_Config.cursor_x > rowLen)
-    E_Config.cursor_x = rowLen;
+  if (p->cursor_x > rowLen)
+    p->cursor_x = rowLen;
 }
 
 char *editorPrompt(char *prompt)
