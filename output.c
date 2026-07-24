@@ -22,6 +22,13 @@ void refreshEditorScreen()
   struct buffer ab = BUFFER_INIT;
   repositionCursor(&ab);
   drawEditorRows(&ab);
+  for (int i = 0; i < TOTAL_PANES; i++)
+  {
+    drawPane(&ab, i);
+  }
+  char resetXY[10];
+  int xyLen = snprintf(resetXY, sizeof(resetXY), "\x1b[%d;0H", E_Config.screenRows + 1);
+  bufferAppend(&ab, resetXY, xyLen);
   statusBar(&ab);
   statusMessage(&ab);
   repositionCursor(&ab);
@@ -36,7 +43,7 @@ void refreshEditorScreen()
 
 void drawEditorRows(struct buffer *ab)
 {
-  for (int i = 0; i < E_Config.screenRows; i++)
+  for (int i = 0; i < E_Config.screenRows + 1; i++)
   {
     if (i + 1 == E_Config.rowMid)
     {
@@ -126,4 +133,37 @@ void statusMessage(struct buffer *ab)
     msgLen = E_Config.screenCols;
   if (msgLen && time(NULL) - E_Config.status_msg_time < 5)
     bufferAppend(ab, E_Config.statusMsg, msgLen);
+}
+
+void drawPane(struct buffer *ab, int p)
+{
+  if (p >= TOTAL_PANES)
+    return;
+
+  pane *pPane = &E_Config.panes[p];
+  int y = pPane->base_row;
+  int rowPrinted = 0;
+  for (int r = 0; r < pPane->paneRows; r++)
+  {
+    int paneRow = r + pPane->row_offset + pPane->row_buffer_start;
+    char coords[10];
+    int coordLen = snprintf(coords, sizeof(coords), "\x1b[%d;%dH", y, pPane->base_col);
+    bufferAppend(ab, coords, coordLen);
+    if (rowPrinted >= pPane->numRows)
+    {
+      bufferAppend(ab, "~", 1);
+    }
+    else
+    {
+      int len = E_Config.row[paneRow].size - pPane->col_offset;
+      if (len < 0)
+        len = 0;
+      if (len > pPane->paneCols)
+        len = pPane->paneCols;
+      bufferAppend(ab, &E_Config.row[paneRow].chars[pPane->col_offset], len);
+      rowPrinted++;
+    }
+    y++;
+    bufferAppend(ab, "\r\n", 2);
+  }
 }
