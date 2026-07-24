@@ -262,15 +262,13 @@ void initEditor()
   E_Config.screenRows -= 2;
   E_Config.rowMid = E_Config.screenRows / 2;
   E_Config.colMid = E_Config.screenCols / 2 + 1;
-  E_Config.screenRows--;
-  E_Config.screenCols--;
-  E_Config.panes[0].base_row = 0;
-  E_Config.panes[1].base_row = 0;
+  E_Config.panes[0].base_row = 1;
+  E_Config.panes[1].base_row = 1;
   E_Config.panes[2].base_row = E_Config.rowMid + 1;
   E_Config.panes[3].base_row = E_Config.rowMid + 1;
-  E_Config.panes[0].base_col = 0;
+  E_Config.panes[0].base_col = 1;
   E_Config.panes[1].base_col = E_Config.colMid + 1;
-  E_Config.panes[2].base_col = 0;
+  E_Config.panes[2].base_col = 1;
   E_Config.panes[3].base_col = E_Config.colMid + 1;
   E_Config.panes[0].row_bound = E_Config.rowMid - 1;
   E_Config.panes[1].row_bound = E_Config.rowMid - 1;
@@ -284,4 +282,8 @@ void initEditor()
   E_Config.panes[1].paneRows = E_Config.rowMid - 1;
   E_Config.panes[2].paneRows = E_Config.screenRows - E_Config.rowMid;
   E_Config.panes[3].paneRows = E_Config.screenRows - E_Config.rowMid;
+  E_Config.panes[0].paneCols = E_Config.colMid - 1;
+  E_Config.panes[1].paneCols = E_Config.colMid - 1;
+  E_Config.panes[2].paneCols = E_Config.screenCols - E_Config.colMid;
+  E_Config.panes[3].paneCols = E_Config.screenCols - E_Config.colMid;
 }
