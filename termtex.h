@@ -22,6 +22,15 @@
 #define QUIT_TIMES 3
 #define TOTAL_PANES 4
 
+#define K_K_START "[K_K_START]"
+#define K_K_END "[K_K_END]"
+#define K_U_START "[K_U_START]"
+#define K_U_END "[K_U_END]"
+#define U_K_START "[U_K_START]"
+#define U_K_END "[U_K_END]"
+#define U_U_START "[U_U_START]"
+#define U_U_END "[U_U_END]"
+
 #define CTRL_KEY(key) ((key) & 0x1F)
 
 #define BACKSPACE 127
