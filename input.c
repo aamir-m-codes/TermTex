@@ -93,6 +93,10 @@ void editorProcessKeyPress()
   break;
 
   case CTRL_KEY('l'):
+    E_Config.panes[E_Config.active_pane].active = 0;
+    E_Config.active_pane = (E_Config.active_pane + 1) % 4;
+    E_Config.panes[E_Config.active_pane].active = 1;
+    break;
   case '\x1b':
     /* IGNORE THEM for now because it escape*/
     break;
@@ -107,52 +111,53 @@ void editorProcessKeyPress()
 
 void updateCursor(int c)
 {
-  eRow *row = (E_Config.cursor_y >= E_Config.numRows) ? NULL : &E_Config.row[E_Config.cursor_y];
+  pane *p = &E_Config.panes[E_Config.active_pane];
+  eRow *row = (p->cursor_y >= p->numRows) ? NULL : &E_Config.row[p->row_buffer_start + p->cursor_y];
   switch (c)
   {
   case UP_ARROW:
-    if (E_Config.cursor_y != 0)
-      E_Config.cursor_y--;
+    if (p->cursor_y != 0)
+      p->cursor_y--;
     break;
   case DOWN_ARROW:
-    if (E_Config.cursor_y < E_Config.numRows - 1)
-      E_Config.cursor_y++;
+    if (p->cursor_y < p->numRows - 1)
+      p->cursor_y++;
     break;
   case RIGHT_ARROW:
-    if (row && E_Config.cursor_x < row->size)
+    if (row && p->cursor_x < row->size)
     {
-      E_Config.cursor_x++;
+      p->cursor_x++;
     }
-    else if (E_Config.cursor_y < E_Config.numRows - 1)
+    else if (p->cursor_y < p->numRows - 1)
     {
-      E_Config.cursor_y++;
-      E_Config.cursor_x = 0;
+      p->cursor_y++;
+      p->cursor_x = 0;
     }
     break;
   case LEFT_ARROW:
-    if (E_Config.cursor_x != 0)
+    if (p->cursor_x != 0)
     {
-      E_Config.cursor_x--;
+      p->cursor_x--;
     }
-    else if (E_Config.cursor_x == 0 && E_Config.cursor_y > 0)
+    else if (p->cursor_x == 0 && p->cursor_y > 0)
     {
-      E_Config.cursor_y--;
-      E_Config.cursor_x = E_Config.row[E_Config.cursor_y].size;
+      p->cursor_y--;
+      p->cursor_x = E_Config.row[p->row_buffer_start + p->cursor_y].size;
     }
     break;
   case HOME_KEY:
-    E_Config.cursor_x = 0;
+    p->cursor_x = 0;
     break;
   case END_KEY:
     if (row)
-      E_Config.cursor_x = row->size;
+      p->cursor_x = row->size;
     break;
   }
 
-  row = (E_Config.cursor_y >= E_Config.numRows) ? NULL : &E_Config.row[E_Config.cursor_y];
+  row = (p->cursor_y >= p->numRows) ? NULL : &E_Config.row[p->row_buffer_start + p->cursor_y];
   int rowLen = (row) ? row->size : 0;
-  if (E_Config.cursor_x > rowLen)
-    E_Config.cursor_x = rowLen;
+  if (p->cursor_x > rowLen)
+    p->cursor_x = rowLen;
 }
 
 char *editorPrompt(char *prompt)

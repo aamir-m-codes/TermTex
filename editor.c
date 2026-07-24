@@ -117,6 +117,7 @@ void editorOpen(char *filename)
   if (!fileP)
     die("Error in File Opening");
 
+  fb bl = INIT_FB;
   char *line = NULL;
   size_t lineCap = 0;
   ssize_t lineLen;
@@ -126,7 +127,7 @@ void editorOpen(char *filename)
     {
       lineLen--;
     }
-    rowAppendAt(E_Config.numRows, line, lineLen);
+    loadPanesRows(&bl, E_Config.numRows, line, lineLen);
   }
 
   free(line);
@@ -194,6 +195,35 @@ void editorSaveFile()
   setStatusMessage("Can't save! I/O error: %s", strerror(errno));
 }
 
+void loadPanesRows(fb *bl, int at, char *line, size_t lineLen)
+{
+  int i = 0;
+  for (; i < TOTAL_PANES; i++)
+  {
+    if (lineLen > 0 && strncmp(line, bl->start[i], lineLen) == 0)
+    {
+      E_Config.panes[i].row_buffer_start = at;
+      bl->active = i;
+      return;
+    }
+  }
+  int j = 0;
+  for (; j < TOTAL_PANES; j++)
+  {
+    if (lineLen > 0 && strncmp(line, bl->end[j], lineLen) == 0)
+    {
+      E_Config.panes[j].row_buffer_end = at - 1;
+      bl->active = -1;
+      return;
+    }
+  }
+  if (bl->active != -1)
+  {
+    rowAppendAt(E_Config.numRows, line, lineLen);
+    E_Config.panes[bl->active].numRows++;
+  }
+}
+
 /*** init ***/
 void initEditor()
 {
@@ -201,13 +231,59 @@ void initEditor()
   E_Config.cursor_y = 0;
   E_Config.row_offset = 0;
   E_Config.col_offset = 0;
+  E_Config.rowMid = 0;
+  E_Config.colMid = 0;
   E_Config.numRows = 0;
   E_Config.dirty = 0;
   E_Config.filename = NULL;
   E_Config.statusMsg[0] = '\0';
   E_Config.status_msg_time = 0;
   E_Config.row = NULL;
+  for (int i = 0; i < TOTAL_PANES; i++)
+  {
+    E_Config.panes[i].base_row = 0;
+    E_Config.panes[i].base_col = 0;
+    E_Config.panes[i].row_bound = 0;
+    E_Config.panes[i].col_bound = 0;
+    E_Config.panes[i].cursor_x = 0;
+    E_Config.panes[i].cursor_y = 0;
+    E_Config.panes[i].row_offset = 0;
+    E_Config.panes[i].col_offset = 0;
+    E_Config.panes[i].paneRows = 0;
+    E_Config.panes[i].paneCols = 0;
+    E_Config.panes[i].numRows = 0;
+    E_Config.panes[i].row_buffer_start = 0;
+    E_Config.panes[i].row_buffer_end = 0;
+    E_Config.panes[i].active = (i == 0);
+  }
+  E_Config.active_pane = 0;
   if (getWindowSize(&E_Config.screenRows, &E_Config.screenCols) == -1)
     die("Error in window size");
   E_Config.screenRows -= 2;
+  E_Config.rowMid = E_Config.screenRows / 2;
+  E_Config.colMid = E_Config.screenCols / 2 + 1;
+  E_Config.panes[0].base_row = 1;
+  E_Config.panes[1].base_row = 1;
+  E_Config.panes[2].base_row = E_Config.rowMid + 1;
+  E_Config.panes[3].base_row = E_Config.rowMid + 1;
+  E_Config.panes[0].base_col = 1;
+  E_Config.panes[1].base_col = E_Config.colMid + 1;
+  E_Config.panes[2].base_col = 1;
+  E_Config.panes[3].base_col = E_Config.colMid + 1;
+  E_Config.panes[0].row_bound = E_Config.rowMid - 1;
+  E_Config.panes[1].row_bound = E_Config.rowMid - 1;
+  E_Config.panes[2].row_bound = E_Config.screenRows;
+  E_Config.panes[3].row_bound = E_Config.screenRows;
+  E_Config.panes[0].col_bound = E_Config.colMid - 1;
+  E_Config.panes[1].col_bound = E_Config.screenCols;
+  E_Config.panes[2].col_bound = E_Config.colMid - 1;
+  E_Config.panes[3].col_bound = E_Config.screenCols;
+  E_Config.panes[0].paneRows = E_Config.rowMid - 1;
+  E_Config.panes[1].paneRows = E_Config.rowMid - 1;
+  E_Config.panes[2].paneRows = E_Config.screenRows - E_Config.rowMid;
+  E_Config.panes[3].paneRows = E_Config.screenRows - E_Config.rowMid;
+  E_Config.panes[0].paneCols = E_Config.colMid - 1;
+  E_Config.panes[1].paneCols = E_Config.colMid - 1;
+  E_Config.panes[2].paneCols = E_Config.screenCols - E_Config.colMid;
+  E_Config.panes[3].paneCols = E_Config.screenCols - E_Config.colMid;
 }
