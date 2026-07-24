@@ -131,14 +131,14 @@ void updateCursor(int c)
     }
     break;
   case LEFT_ARROW:
-    if (E_Config.cursor_x != 0)
+    if (p->cursor_x != 0)
     {
-      E_Config.cursor_x--;
+      p->cursor_x--;
     }
-    else if (E_Config.cursor_x == 0 && E_Config.cursor_y > 0)
+    else if (p->cursor_x == 0 && p->cursor_y > p->base_row - 1)
     {
-      E_Config.cursor_y--;
-      E_Config.cursor_x = E_Config.row[E_Config.cursor_y].size;
+      p->cursor_y--;
+      p->cursor_x = E_Config.row[p->row_buffer_start + p->cursor_y].size;
     }
     break;
   case HOME_KEY:
