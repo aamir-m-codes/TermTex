@@ -91,7 +91,7 @@ void statusBar(struct buffer *ab)
   if ((int)len > E_Config.screenCols)
     len = E_Config.screenCols;
   bufferAppend(ab, status, len);
-  size_t cLen = snprintf(cursorStatus, sizeof(cursorStatus), "Ln %d,Col %d", E_Config.cursor_y + 1, E_Config.cursor_x + 1);
+  size_t cLen = snprintf(cursorStatus, sizeof(cursorStatus), "Pane %d,Ln %d,Col %d", E_Config.active_pane + 1, E_Config.cursor_y + 1, E_Config.cursor_x + 1);
   while ((int)len < E_Config.screenCols)
   {
     if (E_Config.screenCols - len == cLen)
