@@ -117,6 +117,7 @@ void editorOpen(char *filename)
   if (!fileP)
     die("Error in File Opening");
 
+  fb bl = INIT_FB;
   char *line = NULL;
   size_t lineCap = 0;
   ssize_t lineLen;
@@ -126,7 +127,7 @@ void editorOpen(char *filename)
     {
       lineLen--;
     }
-    rowAppendAt(E_Config.numRows, line, lineLen);
+    loadPanesRows(&bl, E_Config.numRows, line, lineLen);
   }
 
   free(line);
@@ -192,6 +193,35 @@ void editorSaveFile()
   }
   free(buf);
   setStatusMessage("Can't save! I/O error: %s", strerror(errno));
+}
+
+void loadPanesRows(fb *bl, int at, char *line, size_t lineLen)
+{
+  int i = 0;
+  for (; i < TOTAL_PANES; i++)
+  {
+    if (strncmp(line, bl->start[i], lineLen) == 0)
+    {
+      E_Config.panes[i].row_buffer_start = at;
+      bl->active = i;
+      return;
+    }
+  }
+  int j = 0;
+  for (; j < TOTAL_PANES; j++)
+  {
+    if (strncmp(line, bl->end[j], lineLen) == 0)
+    {
+      E_Config.panes[j].row_buffer_end = at;
+      bl->active = -1;
+      return;
+    }
+  }
+  if (bl->active != -1)
+  {
+    rowAppendAt(E_Config.numRows, line, lineLen);
+    E_Config.panes[bl->active].numRows++;
+  }
 }
 
 /*** init ***/

@@ -82,6 +82,7 @@ void editorInserNewLine();
 char *editorRowsToString(int *len);
 void editorSaveFile();
 char *editorPrompt(char *prompt);
+void loadPanesRows(fb *bl, int at, char *line, size_t lineLen);
 
 struct eRow
 {
