@@ -200,7 +200,7 @@ void loadPanesRows(fb *bl, int at, char *line, size_t lineLen)
   int i = 0;
   for (; i < TOTAL_PANES; i++)
   {
-    if (strncmp(line, bl->start[i], lineLen) == 0)
+    if (lineLen > 0 && strncmp(line, bl->start[i], lineLen) == 0)
     {
       E_Config.panes[i].row_buffer_start = at;
       bl->active = i;
@@ -210,7 +210,7 @@ void loadPanesRows(fb *bl, int at, char *line, size_t lineLen)
   int j = 0;
   for (; j < TOTAL_PANES; j++)
   {
-    if (strncmp(line, bl->end[j], lineLen) == 0)
+    if (lineLen > 0 && strncmp(line, bl->end[j], lineLen) == 0)
     {
       E_Config.panes[j].row_buffer_end = at - 1;
       bl->active = -1;
