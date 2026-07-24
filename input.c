@@ -116,7 +116,7 @@ void updateCursor(int c)
       p->cursor_y--;
     break;
   case DOWN_ARROW:
-    if (p->cursor_y < p->numRows - 1)
+    if (p->cursor_y < (p->base_row - 1) + (p->numRows - 1))
       p->cursor_y++;
     break;
   case RIGHT_ARROW:
