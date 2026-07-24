@@ -120,14 +120,14 @@ void updateCursor(int c)
       p->cursor_y++;
     break;
   case RIGHT_ARROW:
-    if (row && E_Config.cursor_x < row->size)
+    if (row && p->cursor_x < row->size)
     {
-      E_Config.cursor_x++;
+      p->cursor_x++;
     }
-    else if (E_Config.cursor_y < E_Config.numRows - 1)
+    else if (p->cursor_y < p->numRows - 1)
     {
-      E_Config.cursor_y++;
-      E_Config.cursor_x = 0;
+      p->cursor_y++;
+      p->cursor_x = 0;
     }
     break;
   case LEFT_ARROW:
