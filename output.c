@@ -67,24 +67,25 @@ void drawDivider(struct buffer *ab)
 
 void editorScroll()
 {
-  if (E_Config.cursor_y < E_Config.row_offset)
+  pane *p = &E_Config.panes[E_Config.active_pane];
+  if (p->cursor_y < p->row_offset)
   {
-    E_Config.row_offset = E_Config.cursor_y;
+    p->row_offset = p->cursor_y;
   }
 
-  if (E_Config.cursor_y >= E_Config.row_offset + E_Config.screenRows)
+  if (p->cursor_y >= p->row_offset + p->paneRows)
   {
-    E_Config.row_offset = E_Config.cursor_y - E_Config.screenRows + 1;
+    p->row_offset = p->cursor_y - p->paneRows + 1;
   }
 
-  if (E_Config.cursor_x < E_Config.col_offset)
+  if (p->cursor_x < p->col_offset)
   {
-    E_Config.col_offset = E_Config.cursor_x;
+    p->col_offset = p->cursor_x;
   }
 
-  if (E_Config.cursor_x >= E_Config.col_offset + E_Config.screenCols)
+  if (p->cursor_x >= p->col_offset + p->paneCols)
   {
-    E_Config.col_offset = E_Config.cursor_x - E_Config.screenCols + 1;
+    p->col_offset = p->cursor_x - p->paneCols + 1;
   }
 }
 
