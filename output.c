@@ -145,11 +145,16 @@ void drawPaneRows(struct buffer *ab, int p)
   int rowPrinted = 0;
   for (int r = 0; r < pPane->paneRows; r++)
   {
-    int paneRow = r + pPane->row_offset + pPane->row_buffer_start;
+    int prefix = r + pPane->row_offset;
+    int paneRow;
+    if (prefix <= pPane->numRows)
+    {
+      paneRow = prefix + pPane->row_buffer_start;
+    }
     char coords[10];
     int coordLen = snprintf(coords, sizeof(coords), "\x1b[%d;%dH", y, pPane->base_col);
     bufferAppend(ab, coords, coordLen);
-    if (rowPrinted >= pPane->numRows)
+    if (prefix >= pPane->numRows)
     {
       bufferAppend(ab, "~", 1);
     }
