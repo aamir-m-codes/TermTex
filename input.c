@@ -93,6 +93,10 @@ void editorProcessKeyPress()
   break;
 
   case CTRL_KEY('l'):
+    E_Config.panes[E_Config.active_pane].active = 0;
+    E_Config.active_pane = (E_Config.active_pane + 1) % 4;
+    E_Config.panes[E_Config.active_pane].active = 1;
+    break;
   case '\x1b':
     /* IGNORE THEM for now because it escape*/
     break;
